@@ -5,11 +5,12 @@ import { useRouter, usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
 import {
-  LayoutDashboard, Droplets, Fuel, LogOut, Shield, Menu, X
+  LayoutDashboard, Droplets, Fuel, LogOut, Shield, Menu, X, Bike
 } from 'lucide-react';
 
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/admin/motorcycles', label: 'Motorcycles', icon: Bike },
   { href: '/admin/oils', label: 'Oil Brands', icon: Droplets },
   { href: '/admin/fuels', label: 'Fuel Brands', icon: Fuel },
 ];

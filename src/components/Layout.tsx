@@ -19,9 +19,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </div>
               <div>
                 <h1 className="text-lg font-bold text-gray-900 dark:text-white leading-none">
-                  Pakpos<span className="text-blue-600 dark:text-blue-400">Rides</span>
+                  PakPOS<span className="text-blue-600 dark:text-blue-400">Rides</span>
                 </h1>
-                <p className="text-[10px] text-gray-500 dark:text-gray-400 leading-none">Motor Recommendation</p>
+                <p className="text-[10px] text-gray-500 dark:text-gray-400 leading-none">Oil and Gasoline Recommendation</p>
               </div>
             </Link>
 
@@ -67,10 +67,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <footer className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 py-8 mt-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center">
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            &copy; {new Date().getFullYear()} PakposRides. Data仅供参考.
+            &copy; {new Date().getFullYear()} PakPOS Rides. All rights reserved.
           </p>
           <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-            Harga estimasi OTR Jakarta. Spesifikasi dapat berubah tanpa pemberitahuan. Selalu verifikasi dengan dealer resmi.
+            Harga estimasi OTR Jakarta. Spesifikasi dapat berubah tanpa pemberitahuan. Disarankan untuk verifikasi ulang dengan dealer resmi.
           </p>
         </div>
       </footer>

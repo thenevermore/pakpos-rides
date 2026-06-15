@@ -84,9 +84,9 @@ const motorcycleImages = {
 
 // ============ FUEL BRAND LOGOS ============
 const fuelBrandLogos = {
-  fb_001: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Pertamina_logo_2020.svg/200px-Pertamina_logo_2020.svg.png',
-  fb_002: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Pertamina_logo_2020.svg/200px-Pertamina_logo_2020.svg.png',
-  fb_003: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Pertamina_logo_2020.svg/200px-Pertamina_logo_2020.svg.png',
+  fb_001: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Pertamina_Logo.svg/960px-Pertamina_Logo.svg.png',
+  fb_002: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Pertamina_Logo.svg/960px-Pertamina_Logo.svg.png',
+  fb_003: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Pertamina_Logo.svg/960px-Pertamina_Logo.svg.png',
   fb_004: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Shell_logo.svg/200px-Shell_logo.svg.png',
   fb_005: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Shell_logo.svg/200px-Shell_logo.svg.png',
   fb_006: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/BP-logo.svg/200px-BP-logo.svg.png',

@@ -19,6 +19,7 @@ export interface Motorcycle {
   category: 'sport' | 'matic' | 'bebek' | 'naked' | 'trail';
   image_url: string | null;
   last_updated: string;
+  affiliate_url?: string | null;
   brand?: Brand;
 }
 

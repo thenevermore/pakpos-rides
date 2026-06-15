@@ -6,7 +6,7 @@ import { formatPrice, getCategoryLabel, getCategoryColor, getCompressionLevel, g
 import LogoImage from './LogoImage';
 import {
   Info, Zap, Fuel, Droplets, Tag, Cog, Settings,
-  Calendar, Gauge, Sun, Route, ShoppingBag
+  Calendar, Gauge, Sun, Route, ShoppingBag, ExternalLink, AlertTriangle, Send, Loader2, Check
 } from 'lucide-react';
 
 interface TabDetailProps {
@@ -58,6 +58,16 @@ export default function TabDetail({ motorcycle }: TabDetailProps) {
               <Calendar className="w-3 h-3" />
               Diperbarui: {new Date(motorcycle.last_updated).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
             </div>
+            {motorcycle.affiliate_url && (
+              <a 
+                href={motorcycle.affiliate_url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 bg-white text-blue-600 font-bold rounded-xl hover:bg-blue-50 transition-colors shadow-sm"
+              >
+                Cek Promo & Beli <ExternalLink className="w-4 h-4" />
+              </a>
+            )}
           </div>
 
           {/* Specs grid */}
@@ -67,6 +77,8 @@ export default function TabDetail({ motorcycle }: TabDetailProps) {
             <SpecCard icon={<Cog className="w-5 h-5" />} label="Tipe Mesin" value={motorcycle.engine_type} />
             <SpecCard icon={<Gauge className="w-5 h-5" />} label="Transmisi" value={motorcycle.transmission_type} />
           </div>
+
+          <FeedbackForm motorcycleName={motorcycle.name} />
 
           {/* JASO Badge */}
           <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-4 flex items-start gap-3">
@@ -267,6 +279,117 @@ function SpecCard({ icon, label, value, badge }: { icon: React.ReactNode; label:
           <p className="text-sm font-semibold text-gray-900 dark:text-white mt-0.5">{value}</p>
         )}
       </div>
+    </div>
+  );
+}
+
+function FeedbackForm({ motorcycleName }: { motorcycleName: string }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    setStatus('idle');
+    
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      motorcycleName,
+      errorType: formData.get('errorType'),
+      correctValue: formData.get('correctValue'),
+      senderContact: formData.get('senderContact')
+    };
+
+    try {
+      // Endpoint requires NEXT_PUBLIC_FEEDBACK_SCRIPT_URL to be set in .env.local
+      const url = process.env.NEXT_PUBLIC_FEEDBACK_SCRIPT_URL;
+      if (!url) throw new Error('Feedback endpoint not configured');
+
+      const res = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) throw new Error('Failed to submit');
+      setStatus('success');
+      setTimeout(() => {
+        setIsOpen(false);
+        setStatus('idle');
+      }, 3000);
+    } catch (err) {
+      console.error(err);
+      setStatus('error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!isOpen) {
+    return (
+      <div className="flex justify-end">
+        <button 
+          onClick={() => setIsOpen(true)}
+          className="flex items-center gap-1.5 text-xs font-medium text-gray-400 hover:text-blue-600 transition-colors"
+        >
+          <AlertTriangle className="w-3.5 h-3.5" />
+          Info ini salah? Laporkan
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-800 p-5 mt-4">
+      <div className="flex items-center justify-between mb-4">
+        <h4 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+          <AlertTriangle className="w-4 h-4 text-orange-500" />
+          Laporkan Kesalahan Data
+        </h4>
+        <button onClick={() => setIsOpen(false)} className="text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+          Batal
+        </button>
+      </div>
+
+      {status === 'success' ? (
+        <div className="bg-green-50 text-green-700 p-3 rounded-lg text-sm flex items-center gap-2">
+          <Check className="w-4 h-4" /> Laporan berhasil dikirim! Terima kasih.
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <div>
+            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Bagian yang salah</label>
+            <select name="errorType" required className="w-full text-sm px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="">Pilih bagian...</option>
+              <option value="Harga">Estimasi Harga OTR</option>
+              <option value="Spesifikasi">Tipe Mesin / Transmisi</option>
+              <option value="Gambar">Gambar Kendaraan</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Informasi yang benar</label>
+            <textarea name="correctValue" required rows={2} placeholder="Mohon tuliskan informasi yang seharusnya..." className="w-full text-sm px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Kontak Anda (Opsional)</label>
+            <input name="senderContact" type="text" placeholder="Email / IG untuk konfirmasi" className="w-full text-sm px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          
+          {status === 'error' && (
+            <p className="text-xs text-red-600">Gagal mengirim laporan. Pastikan URL endpoint valid.</p>
+          )}
+
+          <button 
+            type="submit" 
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-2 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg text-sm transition-colors disabled:opacity-70"
+          >
+            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+            Kirim Laporan
+          </button>
+        </form>
+      )}
     </div>
   );
 }
