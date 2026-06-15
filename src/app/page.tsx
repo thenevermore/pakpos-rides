@@ -1,65 +1,55 @@
-import Image from "next/image";
+import BrandCard from '@/components/BrandCard';
+import { getBrands } from '@/lib/data';
+import { Bike, Search } from 'lucide-react';
 
-export default function Home() {
+export default async function Home() {
+  const brands = await getBrands();
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+      {/* Hero section */}
+      <div className="text-center mb-12">
+        <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded-full text-sm font-medium mb-4">
+          <Bike className="w-4 h-4" />
+          Rekomendasi Sepeda Motor Indonesia
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 dark:text-white tracking-tight">
+          Temukan <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Motor Ideal</span> Anda
+        </h1>
+        <p className="mt-4 text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          Rasio kompresi, rekomendasi bensin, dan oli terbaik untuk setiap jenis sepeda motor di Indonesia.
+        </p>
+      </div>
+
+      {/* How it works */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-12">
+        <StepCard step="1" title="Pilih Brand" desc="Pilih brand kendaraan favorit Anda" />
+        <StepCard step="2" title="Pilih Model" desc="Temukan model motor yang Anda inginkan" />
+        <StepCard step="3" title="Lihat Rekomendasi" desc="Dapatkan rekomendasi bensin & oli terbaik" />
+      </div>
+
+      {/* Brand grid */}
+      <div className="mb-6 flex items-center justify-between">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white">Pilih Brand</h2>
+        <span className="text-sm text-gray-500 dark:text-gray-400">{brands.length} brand tersedia</span>
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+        {brands.map(brand => (
+          <BrandCard key={brand.id} brand={brand} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function StepCard({ step, title, desc }: { step: string; title: string; desc: string }) {
+  return (
+    <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-5 text-center">
+      <div className="w-10 h-10 mx-auto bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm mb-3">
+        {step}
+      </div>
+      <h3 className="text-sm font-bold text-gray-900 dark:text-white">{title}</h3>
+      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{desc}</p>
     </div>
   );
 }
