@@ -39,6 +39,7 @@ yarn-error.log*
 
 # screenshots
 screenshot-*.png
+deploy-screenshot-*.png
 
 # typescript
 *.tsbuildinfo

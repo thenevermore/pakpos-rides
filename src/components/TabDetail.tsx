@@ -6,7 +6,7 @@ import { formatPrice, getCategoryLabel, getCategoryColor, getCompressionLevel, g
 import LogoImage from './LogoImage';
 import {
   Info, Zap, Fuel, Droplets, Tag, Cog, Settings,
-  Calendar, Gauge, Sun, Route
+  Calendar, Gauge, Sun, Route, ShoppingBag
 } from 'lucide-react';
 
 interface TabDetailProps {
@@ -136,23 +136,31 @@ export default function TabDetail({ motorcycle }: TabDetailProps) {
               </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {recommendations.fuel_brands.map(fuel => (
-                <div key={fuel.id} className="bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-4 flex items-center gap-3 hover:shadow-md transition-shadow">
-                  <LogoImage
-                    src={fuel.logo_url}
-                    alt={fuel.name}
-                    fallbackText={fuel.name}
-                    size={44}
-                    bgColor="bg-gradient-to-br from-green-500 to-emerald-700"
-                  />
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{fuel.name}</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {fuel.producer} &middot; Oktan {fuel.octane}
-                    </p>
+              {recommendations.fuel_brands.map(fuel => {
+                const content = (
+                  <div key={fuel.id} className={`bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-4 flex items-center gap-3 transition-shadow ${fuel.affiliate_url ? 'hover:shadow-lg cursor-pointer ring-1 ring-transparent hover:ring-green-300 dark:hover:ring-green-700' : 'hover:shadow-md'}`}>
+                    <LogoImage
+                      src={fuel.logo_url}
+                      alt={fuel.name}
+                      fallbackText={fuel.name}
+                      size={44}
+                      bgColor="bg-gradient-to-br from-green-500 to-emerald-700"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{fuel.name}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        {fuel.producer} &middot; Oktan {fuel.octane}
+                      </p>
+                    </div>
+                    {fuel.affiliate_url && (
+                      <ShoppingBag className="w-4 h-4 text-green-500 flex-shrink-0" />
+                    )}
                   </div>
-                </div>
-              ))}
+                );
+                return fuel.affiliate_url ? (
+                  <a key={fuel.id} href={fuel.affiliate_url} target="_blank" rel="noopener noreferrer">{content}</a>
+                ) : content;
+              })}
             </div>
           </div>
 
@@ -176,23 +184,31 @@ export default function TabDetail({ motorcycle }: TabDetailProps) {
                 <h4 className="text-sm font-bold text-gray-700 dark:text-gray-300">Harian / Commuting</h4>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {recommendations.oil_daily.map(oil => (
-                  <div key={oil.id} className="bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-4 flex items-center gap-3 hover:shadow-md transition-shadow">
-                    <LogoImage
-                      src={oil.logo_url}
-                      alt={oil.name}
-                      fallbackText={oil.name}
-                      size={44}
-                      bgColor="bg-gradient-to-br from-amber-500 to-orange-700"
-                    />
-                    <div className="min-w-0">
-                      <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{oil.name}</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        {oil.base_type} &middot; {oil.viscosity}
-                      </p>
+                {recommendations.oil_daily.map(oil => {
+                  const content = (
+                    <div key={oil.id} className={`bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-4 flex items-center gap-3 transition-shadow ${oil.affiliate_url ? 'hover:shadow-lg cursor-pointer ring-1 ring-transparent hover:ring-amber-300 dark:hover:ring-amber-700' : 'hover:shadow-md'}`}>
+                      <LogoImage
+                        src={oil.logo_url}
+                        alt={oil.name}
+                        fallbackText={oil.name}
+                        size={44}
+                        bgColor="bg-gradient-to-br from-amber-500 to-orange-700"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{oil.name}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          {oil.base_type} &middot; {oil.viscosity}
+                        </p>
+                      </div>
+                      {oil.affiliate_url && (
+                        <ShoppingBag className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                      )}
                     </div>
-                  </div>
-                ))}
+                  );
+                  return oil.affiliate_url ? (
+                    <a key={oil.id} href={oil.affiliate_url} target="_blank" rel="noopener noreferrer">{content}</a>
+                  ) : content;
+                })}
               </div>
             </div>
 
@@ -203,23 +219,31 @@ export default function TabDetail({ motorcycle }: TabDetailProps) {
                 <h4 className="text-sm font-bold text-gray-700 dark:text-gray-300">Touring / Jarak Jauh</h4>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {recommendations.oil_touring.map(oil => (
-                  <div key={oil.id} className="bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-4 flex items-center gap-3 hover:shadow-md transition-shadow">
-                    <LogoImage
-                      src={oil.logo_url}
-                      alt={oil.name}
-                      fallbackText={oil.name}
-                      size={44}
-                      bgColor="bg-gradient-to-br from-blue-500 to-indigo-700"
-                    />
-                    <div className="min-w-0">
-                      <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{oil.name}</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        {oil.base_type} &middot; {oil.viscosity}
-                      </p>
+                {recommendations.oil_touring.map(oil => {
+                  const content = (
+                    <div key={oil.id} className={`bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-4 flex items-center gap-3 transition-shadow ${oil.affiliate_url ? 'hover:shadow-lg cursor-pointer ring-1 ring-transparent hover:ring-blue-300 dark:hover:ring-blue-700' : 'hover:shadow-md'}`}>
+                      <LogoImage
+                        src={oil.logo_url}
+                        alt={oil.name}
+                        fallbackText={oil.name}
+                        size={44}
+                        bgColor="bg-gradient-to-br from-blue-500 to-indigo-700"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{oil.name}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          {oil.base_type} &middot; {oil.viscosity}
+                        </p>
+                      </div>
+                      {oil.affiliate_url && (
+                        <ShoppingBag className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                      )}
                     </div>
-                  </div>
-                ))}
+                  );
+                  return oil.affiliate_url ? (
+                    <a key={oil.id} href={oil.affiliate_url} target="_blank" rel="noopener noreferrer">{content}</a>
+                  ) : content;
+                })}
               </div>
             </div>
           </div>

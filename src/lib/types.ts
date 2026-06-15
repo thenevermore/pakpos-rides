@@ -28,6 +28,7 @@ export interface FuelBrand {
   octane: number;
   logo_url: string | null;
   producer: string;
+  affiliate_url?: string | null;
 }
 
 export interface OilBrand {
@@ -38,6 +39,7 @@ export interface OilBrand {
   certification: string;
   usage_type: 'daily' | 'touring';
   logo_url: string | null;
+  affiliate_url?: string | null;
 }
 
 export interface KnowledgeBase {
