@@ -19,7 +19,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </div>
               <div>
                 <h1 className="text-lg font-bold text-gray-900 dark:text-white leading-none">
-                  PakPOS<span className="text-blue-600 dark:text-blue-400">Rides</span>
+                  PakPOS-<span className="text-blue-600 dark:text-blue-400">Rides</span>
                 </h1>
                 <p className="text-[10px] text-gray-500 dark:text-gray-400 leading-none">Oil and Gasoline Recommendation</p>
               </div>
@@ -30,9 +30,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <Link href="/" className="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
                 Beranda
               </Link>
-              <a href="#about" className="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+              <Link href="/about" className="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
                 Tentang
-              </a>
+              </Link>
             </nav>
 
             {/* Mobile menu button */}
@@ -50,9 +50,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <Link href="/" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800">
                 Beranda
               </Link>
-              <a href="#about" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800">
+              <Link href="/about" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800">
                 Tentang
-              </a>
+              </Link>
             </nav>
           )}
         </div>

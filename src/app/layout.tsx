@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PakposRides - Rekomendasi Sepeda Motor Indonesia",
-  description: "Temukan rasio kompresi, rekomendasi bensin, dan oli terbaik untuk sepeda motor Anda di Indonesia.",
+  title: "PakPOS Rides - Informasi Sepeda Motor Indonesia",
+  description: "Temukan rasio kompresi, rekomendasi bensin, dan oli terbaik untuk sepeda motor kamu disini.",
 };
 
 export default function RootLayout({

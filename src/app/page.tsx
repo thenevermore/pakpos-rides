@@ -11,10 +11,10 @@ export default async function Home() {
       <div className="text-center mb-12">
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded-full text-sm font-medium mb-4">
           <Bike className="w-4 h-4" />
-          Rekomendasi Sepeda Motor Indonesia
+          PakPOS Rides - Informasi Sepeda Motor Indonesia
         </div>
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 dark:text-white tracking-tight">
-          Temukan <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Motor Ideal</span> Anda
+          Temukan <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">informasi tentang motor</span> Kamu
         </h1>
         <p className="mt-4 text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
           Rasio kompresi, rekomendasi bensin, dan oli terbaik untuk setiap jenis sepeda motor di Indonesia.
@@ -23,8 +23,8 @@ export default async function Home() {
 
       {/* How it works */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-12">
-        <StepCard step="1" title="Pilih Brand" desc="Pilih brand kendaraan favorit Anda" />
-        <StepCard step="2" title="Pilih Model" desc="Temukan model motor yang Anda inginkan" />
+        <StepCard step="1" title="Pilih Brand" desc="Pilih brand kendaraan kamu" />
+        <StepCard step="2" title="Pilih Model" desc="Pilih model motor nya" />
         <StepCard step="3" title="Lihat Rekomendasi" desc="Dapatkan rekomendasi bensin & oli terbaik" />
       </div>
 
