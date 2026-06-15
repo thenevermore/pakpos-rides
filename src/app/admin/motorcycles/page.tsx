@@ -61,8 +61,19 @@ export default function AdminMotorcyclesPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Motorcycles</h1>
-      <p className="text-sm text-gray-500 dark:text-gray-400 mb-8">Manage affiliate links for motorcycle products</p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Motorcycles</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Manage affiliate links and add new motorcycles</p>
+        </div>
+        <a
+          href="/admin/motorcycles/add"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-xl transition-colors shadow-sm"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+          Tambah Motor Baru
+        </a>
+      </div>
 
       {categories.map((category, index) => (
         <div key={category}>
