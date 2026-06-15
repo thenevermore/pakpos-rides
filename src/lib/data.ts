@@ -1,38 +1,143 @@
-import { Brand, Motorcycle, MotorcycleDetail } from './types';
-import { brands, motorcycles, getKnowledgeBase } from './seed-data';
+import { Brand, Motorcycle, MotorcycleDetail, FuelBrand, OilBrand } from './types';
+import { brands as localBrands, motorcycles as localMotorcycles, fuelBrands as localFuelBrands, oilBrands as localOilBrands, getKnowledgeBase } from './seed-data';
+import { supabase } from './supabase';
 
-// Data access layer - currently using local seed data
-// Can be swapped to Supabase by replacing implementations
+const hasSupabase = !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+// ========== BRANDS ==========
 
 export async function getBrands(): Promise<Brand[]> {
-  return brands;
+  if (!hasSupabase) return localBrands;
+
+  const { data, error } = await supabase
+    .from('brands')
+    .select('*')
+    .order('name');
+
+  if (error || !data) {
+    console.error('Supabase getBrands error:', error?.message);
+    return localBrands;
+  }
+  return data;
 }
 
 export async function getBrandBySlug(slug: string): Promise<Brand | undefined> {
-  return brands.find(b => b.slug === slug);
+  if (!hasSupabase) return localBrands.find(b => b.slug === slug);
+
+  const { data, error } = await supabase
+    .from('brands')
+    .select('*')
+    .eq('slug', slug)
+    .single();
+
+  if (error || !data) {
+    console.error('Supabase getBrandBySlug error:', error?.message);
+    return localBrands.find(b => b.slug === slug);
+  }
+  return data;
 }
 
+// ========== MOTORCYCLES ==========
+
 export async function getMotorcyclesByBrand(brandId: string): Promise<Motorcycle[]> {
-  return motorcycles.filter(m => m.brand_id === brandId);
+  if (!hasSupabase) return localMotorcycles.filter(m => m.brand_id === brandId);
+
+  const { data, error } = await supabase
+    .from('motorcycles')
+    .select('*')
+    .eq('brand_id', brandId)
+    .order('name');
+
+  if (error || !data) {
+    console.error('Supabase getMotorcyclesByBrand error:', error?.message);
+    return localMotorcycles.filter(m => m.brand_id === brandId);
+  }
+  return data;
 }
 
 export async function getMotorcycleById(id: string): Promise<MotorcycleDetail | undefined> {
-  const motorcycle = motorcycles.find(m => m.id === id);
-  if (!motorcycle) return undefined;
+  if (!hasSupabase) {
+    const motorcycle = localMotorcycles.find(m => m.id === id);
+    if (!motorcycle) return undefined;
+    const brand = localBrands.find(b => b.id === motorcycle.brand_id);
+    const recommendations = getKnowledgeBase(motorcycle);
+    return { ...motorcycle, brand, recommendations };
+  }
 
-  const brand = brands.find(b => b.id === motorcycle.brand_id);
-  const recommendations = getKnowledgeBase(motorcycle);
+  // Fetch motorcycle
+  const { data: motorcycle, error: mError } = await supabase
+    .from('motorcycles')
+    .select('*, brands(*)')
+    .eq('motorcycles.id', id)
+    .single();
 
-  return {
-    ...motorcycle,
-    brand,
-    recommendations,
+  if (mError || !motorcycle) {
+    console.error('Supabase getMotorcycleById error:', mError?.message);
+    const local = localMotorcycles.find(m => m.id === id);
+    if (!local) return undefined;
+    const brand = localBrands.find(b => b.id === local.brand_id);
+    return { ...local, brand, recommendations: getKnowledgeBase(local) };
+  }
+
+  // Fetch knowledge base
+  const { data: kb, error: kbError } = await supabase
+    .from('knowledge_base')
+    .select('*')
+    .eq('motorcycle_id', id)
+    .single();
+
+  if (kbError || !kb) {
+    console.error('Supabase knowledge_base error:', kbError?.message);
+    // Fallback to computed recommendations
+    const brand = motorcycle.brands as Brand;
+    return { ...motorcycle, brand, recommendations: getKnowledgeBase(motorcycle as unknown as Motorcycle) };
+  }
+
+  // Fetch fuel brands
+  const fuelIds = kb.fuel_brand_ids || [];
+  const { data: fuels } = await supabase
+    .from('fuel_brands')
+    .select('*')
+    .in('id', fuelIds.length > 0 ? fuelIds : ['none']);
+
+  // Fetch oil brands (daily + touring)
+  const allOilIds = [...(kb.oil_daily_ids || []), ...(kb.oil_touring_ids || [])];
+  const uniqueOilIds = [...new Set(allOilIds)];
+  const { data: oils } = await supabase
+    .from('oil_brands')
+    .select('*')
+    .in('id', uniqueOilIds.length > 0 ? uniqueOilIds : ['none']);
+
+  const brand = motorcycle.brands as Brand;
+  const recommendations = {
+    id: kb.id,
+    motorcycle_id: kb.motorcycle_id,
+    min_octane: kb.min_octane,
+    ideal_octane: kb.ideal_octane,
+    fuel_brands: (fuels as FuelBrand[]) || [],
+    oil_daily: (oils as OilBrand[] || []).filter(o => (kb.oil_daily_ids || []).includes(o.id)),
+    oil_touring: (oils as OilBrand[] || []).filter(o => (kb.oil_touring_ids || []).includes(o.id)),
   };
+
+  return { ...motorcycle, brand, recommendations };
 }
 
 export async function getAllMotorcycles(): Promise<Motorcycle[]> {
-  return motorcycles;
+  if (!hasSupabase) return localMotorcycles;
+
+  const { data, error } = await supabase
+    .from('motorcycles')
+    .select('*')
+    .order('name');
+
+  if (error || !data) {
+    console.error('Supabase getAllMotorcycles error:', error?.message);
+    return localMotorcycles;
+  }
+  return data;
 }
+
+// ========== UTILITY FUNCTIONS ==========
 
 export function formatPrice(price: number): string {
   return new Intl.NumberFormat('id-ID', {
