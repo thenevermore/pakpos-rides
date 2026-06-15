@@ -15,7 +15,7 @@ export default function ModelCard({ motorcycle }: { motorcycle: Motorcycle }) {
           <img
             src={motorcycle.image_url}
             alt={motorcycle.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
           <Bike className="w-16 h-16 text-gray-300 dark:text-gray-600" />

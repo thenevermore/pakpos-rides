@@ -29,7 +29,7 @@ export default async function MotorcyclePage({ params }: { params: Promise<{ id:
             <img
               src={motorcycle.image_url}
               alt={motorcycle.name}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain p-4"
             />
           ) : (
             <Bike className="w-24 h-24 text-gray-300 dark:text-gray-600" />
