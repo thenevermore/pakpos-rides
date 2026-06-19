@@ -163,11 +163,11 @@ export default function EditMotorcyclePage() {
 
       if (kbError) {
         const msg = kbError.message || String(kbError);
-        console.error('Knowledge base error:', msg, kbError);
-        throw new Error('Gagal menyimpan rekomendasi: ' + msg);
+        console.warn('Knowledge base update failed (non-blocking):', msg);
+        // Don't throw - motorcycle was saved successfully, KB is secondary
       }
 
-      // Success
+      // Success - redirect even if KB update failed
       router.push('/admin/motorcycles');
       router.refresh();
     } catch (err: any) {
