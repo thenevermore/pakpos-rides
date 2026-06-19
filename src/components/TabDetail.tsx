@@ -77,7 +77,7 @@ export default function TabDetail({ motorcycle }: TabDetailProps) {
             <SpecCard icon={<Cog className="w-5 h-5" />} label="Tipe Mesin" value={motorcycle.engine_type} />
             <SpecCard icon={<Gauge className="w-5 h-5" />} label="Transmisi" value={motorcycle.transmission_type} />
             {motorcycle.fuel_efficiency && (
-              <SpecCard icon={<Fuel className="w-5 h-5" />} label="Efisiensi BBM" value={`${motorcycle.fuel_efficiency} km/L`} badge="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" />
+              <SpecCard icon={<Fuel className="w-5 h-5" />} label="Efisiensi BBM (Rata-rata)" value={`${motorcycle.fuel_efficiency} km/L`} badge="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" />
             )}
           </div>
 
