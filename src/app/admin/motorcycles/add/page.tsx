@@ -49,7 +49,8 @@ export default function AddMotorcyclePage() {
     transmission_type: '',
     category: 'matic',
     image_url: '',
-    affiliate_url: ''
+    affiliate_url: '',
+    fuel_efficiency: ''
   });
 
   useEffect(() => {
@@ -91,6 +92,7 @@ export default function AddMotorcyclePage() {
         image_url: formData.image_url || null,
         cdn_url: cdnUrl,
         affiliate_url: formData.affiliate_url || null,
+        fuel_efficiency: formData.fuel_efficiency ? parseFloat(formData.fuel_efficiency) : null,
       });
 
       if (mtError) throw mtError;
@@ -205,6 +207,12 @@ export default function AddMotorcyclePage() {
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Tipe Mesin *</label>
             <input type="text" name="engine_type" required placeholder="Cth: 157cc, Liquid Cooled, 4-Stroke, SOHC, 4-Valves, eSP+" value={formData.engine_type} onChange={handleChange} className="w-full px-3 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+
+          {/* Fuel Efficiency */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Efisiensi BBM (km/L)</label>
+            <input type="number" name="fuel_efficiency" step="0.1" min="0" placeholder="Cth: 52.3" value={formData.fuel_efficiency} onChange={handleChange} className="w-full px-3 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
 
           {/* Affiliate URL */}

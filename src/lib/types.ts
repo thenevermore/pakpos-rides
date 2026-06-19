@@ -20,6 +20,7 @@ export interface Motorcycle {
   category: 'sport' | 'matic' | 'bebek' | 'naked' | 'trail';
   image_url: string | null;
   cdn_url?: string | null;
+  fuel_efficiency?: number | null;
   last_updated: string;
   affiliate_url?: string | null;
   brand?: Brand;

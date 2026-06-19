@@ -6,7 +6,7 @@ import { formatPrice, getCategoryLabel, getCategoryColor, getCompressionLevel, g
 import LogoImage from './LogoImage';
 import {
   Info, Zap, Fuel, Droplets, Tag, Cog, Settings,
-  Calendar, Gauge, Sun, Route, ShoppingBag, ExternalLink, AlertTriangle, Send, Loader2, Check
+  Calendar, Gauge, Sun, Route, ShoppingBag, ExternalLink, AlertTriangle, Send, Loader2, Check, GaugeCircle
 } from 'lucide-react';
 
 interface TabDetailProps {
@@ -76,6 +76,9 @@ export default function TabDetail({ motorcycle }: TabDetailProps) {
             <SpecCard icon={<Settings className="w-5 h-5" />} label="Kategori" value={getCategoryLabel(motorcycle.category)} badge={getCategoryColor(motorcycle.category)} />
             <SpecCard icon={<Cog className="w-5 h-5" />} label="Tipe Mesin" value={motorcycle.engine_type} />
             <SpecCard icon={<Gauge className="w-5 h-5" />} label="Transmisi" value={motorcycle.transmission_type} />
+            {motorcycle.fuel_efficiency && (
+              <SpecCard icon={<Fuel className="w-5 h-5" />} label="Efisiensi BBM" value={`${motorcycle.fuel_efficiency} km/L`} badge="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" />
+            )}
           </div>
 
           <FeedbackForm motorcycleName={motorcycle.name} />
@@ -115,11 +118,11 @@ export default function TabDetail({ motorcycle }: TabDetailProps) {
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{compressionInfo.description}</p>
               </div>
             </div>
-            {/* Visual bar */}
+            {/* Visual bar - scale from 8:1 to 14:1 */}
             <div className="mt-4 h-3 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-green-400 via-yellow-400 via-orange-400 to-red-500 rounded-full transition-all"
-                style={{ width: `${Math.min((parseFloat(motorcycle.compression_ratio) / 14) * 100, 100)}%` }}
+                style={{ width: `${Math.min(Math.max(((parseFloat(motorcycle.compression_ratio) - 8) / 6) * 100, 0), 100)}%` }}
               />
             </div>
             <div className="flex justify-between text-[10px] text-gray-400 mt-1">

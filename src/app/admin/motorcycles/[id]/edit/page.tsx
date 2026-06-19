@@ -53,7 +53,9 @@ export default function EditMotorcyclePage() {
     transmission_type: '',
     category: 'matic',
     image_url: '',
-    affiliate_url: ''
+    affiliate_url: '',
+    cdn_url: '' as string | null,
+    fuel_efficiency: ''
   });
 
   useEffect(() => {
@@ -84,7 +86,9 @@ export default function EditMotorcyclePage() {
           transmission_type: motorData.transmission_type,
           category: motorData.category,
           image_url: motorData.image_url || '',
-          affiliate_url: motorData.affiliate_url || ''
+          affiliate_url: motorData.affiliate_url || '',
+          cdn_url: motorData.cdn_url || null,
+          fuel_efficiency: motorData.fuel_efficiency ? motorData.fuel_efficiency.toString() : ''
         });
       }
       setLoading(false);
@@ -106,9 +110,11 @@ export default function EditMotorcyclePage() {
 
     try {
       // Auto-upload image to CDN if URL changed and is not already CDN
-      let cdnUrl: string | null = null;
+      let cdnUrl: string | null = formData.cdn_url || null; // preserve existing
       if (formData.image_url && !formData.image_url.includes('imagekit.io')) {
-        cdnUrl = await uploadToCdn(formData.image_url, 'pakpos-rides/motorcycles');
+        // Only re-upload if image URL changed from original
+        const uploaded = await uploadToCdn(formData.image_url, 'pakpos-rides/motorcycles');
+        if (uploaded) cdnUrl = uploaded;
       }
 
       // 1. Update Motorcycle
@@ -126,6 +132,7 @@ export default function EditMotorcyclePage() {
           image_url: formData.image_url || null,
           cdn_url: cdnUrl,
           affiliate_url: formData.affiliate_url || null,
+          fuel_efficiency: formData.fuel_efficiency ? parseFloat(formData.fuel_efficiency) : null,
           last_updated: new Date().toISOString()
         })
         .eq('id', formData.id);
@@ -152,8 +159,9 @@ export default function EditMotorcyclePage() {
       router.push('/admin/motorcycles');
       router.refresh();
     } catch (err: any) {
-      console.error(err);
-      setError(err.message || 'Terjadi kesalahan saat menyimpan data.');
+      const errMsg = err?.message || err?.error_description || JSON.stringify(err) || 'Terjadi kesalahan saat menyimpan data.';
+      console.error('Submit error:', err);
+      setError(errMsg);
       setIsSubmitting(false);
     }
   };
@@ -250,6 +258,12 @@ export default function EditMotorcyclePage() {
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Tipe Mesin *</label>
             <input type="text" name="engine_type" required placeholder="Cth: 157cc, Liquid Cooled, 4-Stroke, SOHC, 4-Valves, eSP+" value={formData.engine_type} onChange={handleChange} className="w-full px-3 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+
+          {/* Fuel Efficiency */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Efisiensi BBM (km/L)</label>
+            <input type="number" name="fuel_efficiency" step="0.1" min="0" placeholder="Cth: 52.3" value={formData.fuel_efficiency} onChange={handleChange} className="w-full px-3 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
 
           {/* Affiliate URL */}
