@@ -3,6 +3,7 @@ export interface Brand {
   name: string;
   slug: string;
   logo_url: string | null;
+  cdn_url?: string | null;
   country: string;
   created_at: string;
 }
@@ -18,6 +19,7 @@ export interface Motorcycle {
   transmission_type: string;
   category: 'sport' | 'matic' | 'bebek' | 'naked' | 'trail';
   image_url: string | null;
+  cdn_url?: string | null;
   last_updated: string;
   affiliate_url?: string | null;
   brand?: Brand;
@@ -28,6 +30,7 @@ export interface FuelBrand {
   name: string;
   octane: number;
   logo_url: string | null;
+  cdn_url?: string | null;
   producer: string;
   affiliate_url?: string | null;
 }
@@ -40,6 +43,7 @@ export interface OilBrand {
   certification: string;
   usage_type: 'daily' | 'touring';
   logo_url: string | null;
+  cdn_url?: string | null;
   affiliate_url?: string | null;
 }
 

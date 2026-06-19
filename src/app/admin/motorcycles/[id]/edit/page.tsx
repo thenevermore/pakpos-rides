@@ -6,6 +6,7 @@ import { Brand } from '@/lib/types';
 import { useRouter, useParams } from 'next/navigation';
 import { Save, ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { uploadToCdn } from '@/lib/cdn-upload';
 
 // Utilities for recommendations (from contexts.md / seed-data)
 function getOctaneRecommendation(compressionRatio: string) {
@@ -104,6 +105,12 @@ export default function EditMotorcyclePage() {
     setError('');
 
     try {
+      // Auto-upload image to CDN if URL changed and is not already CDN
+      let cdnUrl: string | null = null;
+      if (formData.image_url && !formData.image_url.includes('imagekit.io')) {
+        cdnUrl = await uploadToCdn(formData.image_url, 'pakpos-rides/motorcycles');
+      }
+
       // 1. Update Motorcycle
       const { error: mtError } = await supabase
         .from('motorcycles')
@@ -117,6 +124,7 @@ export default function EditMotorcyclePage() {
           transmission_type: formData.transmission_type,
           category: formData.category,
           image_url: formData.image_url || null,
+          cdn_url: cdnUrl,
           affiliate_url: formData.affiliate_url || null,
           last_updated: new Date().toISOString()
         })

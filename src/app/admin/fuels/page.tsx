@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { FuelBrand } from '@/lib/types';
 import { Save, Check, Loader2, ExternalLink, Plus } from 'lucide-react';
+import { uploadToCdn } from '@/lib/cdn-upload';
 
 export default function AdminFuelsPage() {
   const [fuels, setFuels] = useState<FuelBrand[]>([]);
@@ -47,12 +48,19 @@ export default function AdminFuelsPage() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
+      // Auto-upload logo to CDN
+      let cdnUrl: string | null = null;
+      if (logoUrl && !logoUrl.includes('imagekit.io')) {
+        cdnUrl = await uploadToCdn(logoUrl, 'pakpos-rides/fuels');
+      }
+
       const { error } = await supabase.from('fuel_brands').insert({
         id,
         name,
         octane: parseInt(octane),
         producer,
-        logo_url: logoUrl || null
+        logo_url: logoUrl || null,
+        cdn_url: cdnUrl,
       });
       if (error) throw error;
       
@@ -76,11 +84,20 @@ export default function AdminFuelsPage() {
 
   const save = async (fuel: FuelBrand) => {
     setSavingId(fuel.id);
+    
+    // Auto-upload logo to CDN if changed
+    let cdnUrl: string | null = fuel.cdn_url || null;
+    if (fuel.logo_url && !fuel.logo_url.includes('imagekit.io') && fuel.logo_url !== fuel.cdn_url) {
+      const uploaded = await uploadToCdn(fuel.logo_url, 'pakpos-rides/fuels');
+      if (uploaded) cdnUrl = uploaded;
+    }
+
     const { error } = await supabase
       .from('fuel_brands')
       .update({ 
         affiliate_url: fuel.affiliate_url || null,
-        logo_url: fuel.logo_url || null
+        logo_url: fuel.logo_url || null,
+        cdn_url: cdnUrl,
       })
       .eq('id', fuel.id);
 

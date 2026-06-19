@@ -2,6 +2,7 @@ import Image from 'next/image';
 
 interface LogoImageProps {
   src: string | null;
+  cdnSrc?: string | null;
   alt: string;
   fallbackText: string;
   size?: number;
@@ -9,11 +10,12 @@ interface LogoImageProps {
   bgColor?: string;
 }
 
-export default function LogoImage({ src, alt, fallbackText, size = 48, className = '', bgColor = 'bg-gradient-to-br from-slate-600 to-slate-800' }: LogoImageProps) {
-  if (src) {
+export default function LogoImage({ src, cdnSrc, alt, fallbackText, size = 48, className = '', bgColor = 'bg-gradient-to-br from-slate-600 to-slate-800' }: LogoImageProps) {
+  const imageSrc = cdnSrc || src;
+  if (imageSrc) {
     return (
       <Image
-        src={src}
+        src={imageSrc}
         alt={alt}
         width={size}
         height={size}

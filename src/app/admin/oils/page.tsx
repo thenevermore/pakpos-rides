@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { OilBrand } from '@/lib/types';
 import { Save, Check, Loader2, ExternalLink, Plus } from 'lucide-react';
+import { uploadToCdn } from '@/lib/cdn-upload';
 
 export default function AdminOilsPage() {
   const [oils, setOils] = useState<OilBrand[]>([]);
@@ -49,6 +50,12 @@ export default function AdminOilsPage() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
+      // Auto-upload logo to CDN
+      let cdnUrl: string | null = null;
+      if (logoUrl && !logoUrl.includes('imagekit.io')) {
+        cdnUrl = await uploadToCdn(logoUrl, 'pakpos-rides/oils');
+      }
+
       const { error } = await supabase.from('oil_brands').insert({
         id,
         name,
@@ -56,7 +63,8 @@ export default function AdminOilsPage() {
         viscosity,
         certification,
         usage_type: usageType,
-        logo_url: logoUrl || null
+        logo_url: logoUrl || null,
+        cdn_url: cdnUrl,
       });
       if (error) throw error;
       
@@ -81,11 +89,20 @@ export default function AdminOilsPage() {
 
   const save = async (oil: OilBrand) => {
     setSavingId(oil.id);
+    
+    // Auto-upload logo to CDN if changed
+    let cdnUrl: string | null = oil.cdn_url || null;
+    if (oil.logo_url && !oil.logo_url.includes('imagekit.io') && oil.logo_url !== oil.cdn_url) {
+      const uploaded = await uploadToCdn(oil.logo_url, 'pakpos-rides/oils');
+      if (uploaded) cdnUrl = uploaded;
+    }
+
     const { error } = await supabase
       .from('oil_brands')
       .update({ 
         affiliate_url: oil.affiliate_url || null,
-        logo_url: oil.logo_url || null
+        logo_url: oil.logo_url || null,
+        cdn_url: cdnUrl,
       })
       .eq('id', oil.id);
 

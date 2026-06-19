@@ -153,6 +153,7 @@ export default function TabDetail({ motorcycle }: TabDetailProps) {
                   <div key={fuel.id} className={`bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-4 flex items-center gap-3 transition-shadow ${fuel.affiliate_url ? 'hover:shadow-lg cursor-pointer ring-1 ring-transparent hover:ring-green-300 dark:hover:ring-green-700' : 'hover:shadow-md'}`}>
                     <LogoImage
                       src={fuel.logo_url}
+                      cdnSrc={fuel.cdn_url}
                       alt={fuel.name}
                       fallbackText={fuel.name}
                       size={44}
@@ -201,6 +202,7 @@ export default function TabDetail({ motorcycle }: TabDetailProps) {
                     <div key={oil.id} className={`bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-4 flex items-center gap-3 transition-shadow ${oil.affiliate_url ? 'hover:shadow-lg cursor-pointer ring-1 ring-transparent hover:ring-amber-300 dark:hover:ring-amber-700' : 'hover:shadow-md'}`}>
                       <LogoImage
                         src={oil.logo_url}
+                        cdnSrc={oil.cdn_url}
                         alt={oil.name}
                         fallbackText={oil.name}
                         size={44}
@@ -236,6 +238,7 @@ export default function TabDetail({ motorcycle }: TabDetailProps) {
                     <div key={oil.id} className={`bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-4 flex items-center gap-3 transition-shadow ${oil.affiliate_url ? 'hover:shadow-lg cursor-pointer ring-1 ring-transparent hover:ring-blue-300 dark:hover:ring-blue-700' : 'hover:shadow-md'}`}>
                       <LogoImage
                         src={oil.logo_url}
+                        cdnSrc={oil.cdn_url}
                         alt={oil.name}
                         fallbackText={oil.name}
                         size={44}

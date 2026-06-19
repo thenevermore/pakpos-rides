@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Brand } from '@/lib/types';
-import { Plus, Save, Loader2, Tags, Edit, Trash2, X } from 'lucide-react';
+import { Plus, Save, Loader2, Tags, Edit, Trash2, X, Upload } from 'lucide-react';
+import { uploadToCdn } from '@/lib/cdn-upload';
 
 export default function AdminBrandsPage() {
   const [brands, setBrands] = useState<Brand[]>([]);
@@ -88,12 +89,19 @@ export default function AdminBrandsPage() {
     setError('');
 
     try {
+      // Auto-upload logo to CDN if URL is provided and not already a CDN URL
+      let cdnUrl: string | null = null;
+      if (logoUrl && !logoUrl.includes('imagekit.io')) {
+        cdnUrl = await uploadToCdn(logoUrl, 'pakpos-rides/brands');
+      }
+
       const payload = {
         id,
         name,
         slug,
         country,
-        logo_url: logoUrl || null
+        logo_url: logoUrl || null,
+        cdn_url: cdnUrl,
       };
 
       if (isEditing) {
@@ -202,8 +210,8 @@ export default function AdminBrandsPage() {
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center overflow-hidden flex-shrink-0">
-                        {brand.logo_url ? (
-                          <img src={brand.logo_url} alt={brand.name} className="w-full h-full object-contain p-1" />
+                        {(brand.cdn_url || brand.logo_url) ? (
+                          <img src={brand.cdn_url || brand.logo_url!} alt={brand.name} className="w-full h-full object-contain p-1" />
                         ) : (
                           <Tags className="w-4 h-4 text-gray-400" />
                         )}

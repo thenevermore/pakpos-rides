@@ -24,6 +24,7 @@ export default function BrandCard({ brand }: { brand: Brand }) {
       <div className="p-6 flex flex-col items-center text-center gap-4">
         <LogoImage
           src={brand.logo_url}
+          cdnSrc={brand.cdn_url}
           alt={brand.name}
           fallbackText={brand.name}
           size={72}

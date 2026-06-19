@@ -11,9 +11,9 @@ export default function ModelCard({ motorcycle }: { motorcycle: Motorcycle }) {
     >
       {/* Image area */}
       <div className="h-40 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 flex items-center justify-center relative overflow-hidden">
-        {motorcycle.image_url ? (
+        {(motorcycle.cdn_url || motorcycle.image_url) ? (
           <img
-            src={motorcycle.image_url}
+            src={motorcycle.cdn_url || motorcycle.image_url!}
             alt={motorcycle.name}
             className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300"
           />

@@ -67,8 +67,8 @@ export async function getMotorcycleById(id: string): Promise<MotorcycleDetail | 
   // Fetch motorcycle
   const { data: motorcycle, error: mError } = await supabase
     .from('motorcycles')
-    .select('*, brands(*)')
-    .eq('motorcycles.id', id)
+    .select('*')
+    .eq('id', id)
     .single();
 
   if (mError || !motorcycle) {
@@ -78,6 +78,14 @@ export async function getMotorcycleById(id: string): Promise<MotorcycleDetail | 
     const brand = localBrands.find(b => b.id === local.brand_id);
     return { ...local, brand, recommendations: getKnowledgeBase(local) };
   }
+
+  // Fetch brand separately (avoids FK join issues)
+  const { data: brandData } = await supabase
+    .from('brands')
+    .select('*')
+    .eq('id', motorcycle.brand_id)
+    .single();
+  const brand = (brandData as Brand) || undefined;
 
   // Fetch knowledge base
   const { data: kb, error: kbError } = await supabase
@@ -89,7 +97,6 @@ export async function getMotorcycleById(id: string): Promise<MotorcycleDetail | 
   if (kbError || !kb) {
     console.error('Supabase knowledge_base error:', kbError?.message);
     // Fallback to computed recommendations
-    const brand = motorcycle.brands as Brand;
     return { ...motorcycle, brand, recommendations: getKnowledgeBase(motorcycle as unknown as Motorcycle) };
   }
 
@@ -108,7 +115,6 @@ export async function getMotorcycleById(id: string): Promise<MotorcycleDetail | 
     .select('*')
     .in('id', uniqueOilIds.length > 0 ? uniqueOilIds : ['none']);
 
-  const brand = motorcycle.brands as Brand;
   const recommendations = {
     id: kb.id,
     motorcycle_id: kb.motorcycle_id,

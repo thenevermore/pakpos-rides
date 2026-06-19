@@ -25,9 +25,9 @@ export default async function MotorcyclePage({ params }: { params: Promise<{ id:
       <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden mb-6">
         {/* Image area */}
         <div className="h-48 sm:h-64 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 flex items-center justify-center">
-          {motorcycle.image_url ? (
+          {(motorcycle.cdn_url || motorcycle.image_url) ? (
             <img
-              src={motorcycle.image_url}
+              src={motorcycle.cdn_url || motorcycle.image_url!}
               alt={motorcycle.name}
               className="w-full h-full object-contain p-4"
             />
@@ -41,6 +41,7 @@ export default async function MotorcyclePage({ params }: { params: Promise<{ id:
             {motorcycle.brand && (
               <LogoImage
                 src={motorcycle.brand.logo_url}
+                cdnSrc={motorcycle.brand.cdn_url}
                 alt={motorcycle.brand.name}
                 fallbackText={motorcycle.brand.name}
                 size={48}
