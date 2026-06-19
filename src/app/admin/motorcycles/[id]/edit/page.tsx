@@ -118,26 +118,34 @@ export default function EditMotorcyclePage() {
       }
 
       // 1. Update Motorcycle
+      const updatePayload: Record<string, any> = {
+        brand_id: formData.brand_id,
+        model_code: formData.model_code,
+        name: formData.name,
+        latest_price: parseInt(formData.latest_price) || 0,
+        compression_ratio: formData.compression_ratio,
+        engine_type: formData.engine_type,
+        transmission_type: formData.transmission_type,
+        category: formData.category,
+        image_url: formData.image_url || null,
+        affiliate_url: formData.affiliate_url || null,
+        last_updated: new Date().toISOString()
+      };
+
+      // Only include optional columns if they exist in formData
+      if (formData.cdn_url !== undefined) updatePayload.cdn_url = cdnUrl;
+      if (formData.fuel_efficiency !== undefined) updatePayload.fuel_efficiency = formData.fuel_efficiency ? parseFloat(formData.fuel_efficiency) : null;
+
       const { error: mtError } = await supabase
         .from('motorcycles')
-        .update({
-          brand_id: formData.brand_id,
-          model_code: formData.model_code,
-          name: formData.name,
-          latest_price: parseInt(formData.latest_price) || 0,
-          compression_ratio: formData.compression_ratio,
-          engine_type: formData.engine_type,
-          transmission_type: formData.transmission_type,
-          category: formData.category,
-          image_url: formData.image_url || null,
-          cdn_url: cdnUrl,
-          affiliate_url: formData.affiliate_url || null,
-          fuel_efficiency: formData.fuel_efficiency ? parseFloat(formData.fuel_efficiency) : null,
-          last_updated: new Date().toISOString()
-        })
+        .update(updatePayload)
         .eq('id', formData.id);
 
-      if (mtError) throw mtError;
+      if (mtError) {
+        const msg = mtError.message || String(mtError);
+        console.error('Motorcycle update error:', msg, mtError);
+        throw new Error('Gagal menyimpan motor: ' + msg);
+      }
 
       // 2. Update Knowledge Base via Upsert
       const octaneRec = getOctaneRecommendation(formData.compression_ratio || '10.0:1');
@@ -153,14 +161,18 @@ export default function EditMotorcyclePage() {
         oil_touring_ids: oilRec.touringIds,
       });
 
-      if (kbError) throw kbError;
+      if (kbError) {
+        const msg = kbError.message || String(kbError);
+        console.error('Knowledge base error:', msg, kbError);
+        throw new Error('Gagal menyimpan rekomendasi: ' + msg);
+      }
 
       // Success
       router.push('/admin/motorcycles');
       router.refresh();
     } catch (err: any) {
-      const errMsg = err?.message || err?.error_description || JSON.stringify(err) || 'Terjadi kesalahan saat menyimpan data.';
-      console.error('Submit error:', err);
+      const errMsg = err?.message || err?.error_description || (typeof err === 'object' ? JSON.stringify(err, Object.getOwnPropertyNames(err)) : String(err)) || 'Terjadi kesalahan saat menyimpan data.';
+      console.error('Submit error:', errMsg);
       setError(errMsg);
       setIsSubmitting(false);
     }
