@@ -21,6 +21,7 @@ export interface Motorcycle {
   image_url: string | null;
   cdn_url?: string | null;
   fuel_efficiency?: number | null;
+  fuel_tank_capacity?: number | null;
   last_updated: string;
   affiliate_url?: string | null;
   brand?: Brand;
@@ -33,7 +34,17 @@ export interface FuelBrand {
   logo_url: string | null;
   cdn_url?: string | null;
   producer: string;
+  price_per_liter?: number | null;
   affiliate_url?: string | null;
+}
+
+export interface FuelPrice {
+  id: string;
+  fuel_brand_id: string;
+  price_per_liter: number;
+  region: string;
+  last_updated: string;
+  fuel_brand?: FuelBrand;
 }
 
 export interface OilBrand {

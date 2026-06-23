@@ -55,7 +55,8 @@ export default function EditMotorcyclePage() {
     image_url: '',
     affiliate_url: '',
     cdn_url: '' as string | null,
-    fuel_efficiency: ''
+    fuel_efficiency: '',
+    fuel_tank_capacity: ''
   });
 
   useEffect(() => {
@@ -88,7 +89,8 @@ export default function EditMotorcyclePage() {
           image_url: motorData.image_url || '',
           affiliate_url: motorData.affiliate_url || '',
           cdn_url: motorData.cdn_url || null,
-          fuel_efficiency: motorData.fuel_efficiency ? motorData.fuel_efficiency.toString() : ''
+          fuel_efficiency: motorData.fuel_efficiency ? motorData.fuel_efficiency.toString() : '',
+          fuel_tank_capacity: motorData.fuel_tank_capacity ? motorData.fuel_tank_capacity.toString() : ''
         });
       }
       setLoading(false);
@@ -135,6 +137,7 @@ export default function EditMotorcyclePage() {
       // Only include optional columns if they exist in formData
       if (formData.cdn_url !== undefined) updatePayload.cdn_url = cdnUrl;
       if (formData.fuel_efficiency !== undefined) updatePayload.fuel_efficiency = formData.fuel_efficiency ? parseFloat(formData.fuel_efficiency) : null;
+      if (formData.fuel_tank_capacity !== undefined) updatePayload.fuel_tank_capacity = formData.fuel_tank_capacity ? parseFloat(formData.fuel_tank_capacity) : null;
 
       const { error: mtError } = await supabase
         .from('motorcycles')
@@ -276,6 +279,12 @@ export default function EditMotorcyclePage() {
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Efisiensi BBM (km/L)</label>
             <input type="number" name="fuel_efficiency" step="0.1" min="0" placeholder="Cth: 52.3" value={formData.fuel_efficiency} onChange={handleChange} className="w-full px-3 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+
+          {/* Fuel Tank Capacity */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Kapasitas Tangki (Liter)</label>
+            <input type="number" name="fuel_tank_capacity" step="0.1" min="0" placeholder="Cth: 5.5" value={formData.fuel_tank_capacity} onChange={handleChange} className="w-full px-3 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
 
           {/* Affiliate URL */}

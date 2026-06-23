@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getMotorcycleById } from '@/lib/data';
+import { getMotorcycleById, getFuelPrices } from '@/lib/data';
 import TabDetail from '@/components/TabDetail';
 import LogoImage from '@/components/LogoImage';
 import { ArrowLeft, Bike } from 'lucide-react';
@@ -9,6 +9,7 @@ export default async function MotorcyclePage({ params }: { params: Promise<{ id:
   const { id } = await params;
   const motorcycle = await getMotorcycleById(id);
   if (!motorcycle) notFound();
+  const fuelPrices = await getFuelPrices();
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
@@ -62,7 +63,7 @@ export default async function MotorcyclePage({ params }: { params: Promise<{ id:
       </div>
 
       {/* Tabs */}
-      <TabDetail motorcycle={motorcycle} />
+      <TabDetail motorcycle={motorcycle} fuelPrices={fuelPrices} />
     </div>
   );
 }

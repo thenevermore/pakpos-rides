@@ -1,9 +1,12 @@
 import BrandCard from '@/components/BrandCard';
-import { getBrands } from '@/lib/data';
-import { Bike, Search } from 'lucide-react';
+import HomeFilters from '@/components/HomeFilters';
+import { getBrands, getAllMotorcyclesWithBrands, getKnowledgeBaseData } from '@/lib/data';
+import { Bike } from 'lucide-react';
 
 export default async function Home() {
   const brands = await getBrands();
+  const motorcycles = await getAllMotorcyclesWithBrands();
+  const knowledgeBase = await getKnowledgeBaseData();
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
@@ -27,6 +30,9 @@ export default async function Home() {
         <StepCard step="2" title="Pilih Model" desc="Pilih model motor nya" />
         <StepCard step="3" title="Lihat Rekomendasi" desc="Dapatkan rekomendasi bensin & oli terbaik" />
       </div>
+
+      {/* Filter & Grouping */}
+      <HomeFilters motorcycles={motorcycles} knowledgeBase={knowledgeBase} />
 
       {/* Brand grid */}
       <div className="mb-6 flex items-center justify-between">

@@ -10,14 +10,15 @@ export const brands: Brand[] = [
 ];
 
 export const fuelBrands: FuelBrand[] = [
-  { id: 'fb_001', name: 'Pertalite', octane: 90, logo_url: null, producer: 'Pertamina' },
-  { id: 'fb_002', name: 'Pertamax', octane: 92, logo_url: null, producer: 'Pertamina' },
-  { id: 'fb_003', name: 'Pertamax Turbo', octane: 98, logo_url: null, producer: 'Pertamina' },
-  { id: 'fb_004', name: 'Shell Super', octane: 92, logo_url: null, producer: 'Shell' },
-  { id: 'fb_005', name: 'Shell V-Power', octane: 95, logo_url: null, producer: 'Shell' },
-  { id: 'fb_006', name: 'BP 92', octane: 92, logo_url: null, producer: 'BP' },
-  { id: 'fb_007', name: 'BP 95', octane: 95, logo_url: null, producer: 'BP' },
-  { id: 'fb_008', name: 'Shell Regular', octane: 90, logo_url: null, producer: 'Shell' },
+  { id: 'fb_001', name: 'Pertalite', octane: 90, logo_url: null, producer: 'Pertamina', price_per_liter: 10000 },
+  { id: 'fb_002', name: 'Pertamax', octane: 92, logo_url: null, producer: 'Pertamina', price_per_liter: 16250 },
+  { id: 'fb_009', name: 'Pertamax Green', octane: 95, logo_url: null, producer: 'Pertamina', price_per_liter: 17000 },
+  { id: 'fb_003', name: 'Pertamax Turbo', octane: 98, logo_url: null, producer: 'Pertamina', price_per_liter: 20750 },
+  { id: 'fb_004', name: 'Shell Super', octane: 92, logo_url: null, producer: 'Shell', price_per_liter: 13700 },
+  { id: 'fb_005', name: 'Shell V-Power', octane: 95, logo_url: null, producer: 'Shell', price_per_liter: 16100 },
+  { id: 'fb_006', name: 'BP 92', octane: 92, logo_url: null, producer: 'BP', price_per_liter: 13400 },
+  { id: 'fb_007', name: 'BP 95', octane: 95, logo_url: null, producer: 'BP', price_per_liter: 15900 },
+  { id: 'fb_008', name: 'Shell Regular', octane: 90, logo_url: null, producer: 'Shell', price_per_liter: 12800 },
 ];
 
 export const oilBrands: OilBrand[] = [

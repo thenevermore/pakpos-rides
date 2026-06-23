@@ -1,20 +1,22 @@
 'use client';
 
 import { useState } from 'react';
-import { MotorcycleDetail } from '@/lib/types';
+import { MotorcycleDetail, FuelPrice } from '@/lib/types';
 import { formatPrice, getCategoryLabel, getCategoryColor, getCompressionLevel, getOctaneColor } from '@/lib/data';
 import LogoImage from './LogoImage';
 import {
   Info, Zap, Fuel, Droplets, Tag, Cog, Settings,
-  Calendar, Gauge, Sun, Route, ShoppingBag, ExternalLink, AlertTriangle, Send, Loader2, Check, GaugeCircle
+  Calendar, Gauge, Sun, Route, ShoppingBag, ExternalLink, AlertTriangle, Send, Loader2, Check, GaugeCircle, Banknote
 } from 'lucide-react';
 
 interface TabDetailProps {
   motorcycle: MotorcycleDetail;
+  fuelPrices?: FuelPrice[];
 }
 
-export default function TabDetail({ motorcycle }: TabDetailProps) {
+export default function TabDetail({ motorcycle, fuelPrices = [] }: TabDetailProps) {
   const [activeTab, setActiveTab] = useState<'detail' | 'recommendation'>('detail');
+  const [selectedFuelId, setSelectedFuelId] = useState<string>('');
   const compressionInfo = getCompressionLevel(motorcycle.compression_ratio);
   const { recommendations } = motorcycle;
   const jasoCert = motorcycle.category === 'matic' ? 'JASO MB' : 'JASO MA2';
@@ -78,6 +80,9 @@ export default function TabDetail({ motorcycle }: TabDetailProps) {
             <SpecCard icon={<Gauge className="w-5 h-5" />} label="Transmisi" value={motorcycle.transmission_type} />
             {motorcycle.fuel_efficiency && (
               <SpecCard icon={<Fuel className="w-5 h-5" />} label="Efisiensi BBM (Rata-rata)" value={`${motorcycle.fuel_efficiency} km/L`} badge="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" />
+            )}
+            {motorcycle.fuel_tank_capacity && (
+              <SpecCard icon={<Droplets className="w-5 h-5" />} label="Kapasitas Tangki" value={`${motorcycle.fuel_tank_capacity} Liter`} badge="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400" />
             )}
           </div>
 
@@ -179,6 +184,86 @@ export default function TabDetail({ motorcycle }: TabDetailProps) {
               })}
             </div>
           </div>
+
+          {/* Fuel Cost Calculator */}
+          {motorcycle.fuel_tank_capacity && fuelPrices.length > 0 && (
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <Banknote className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Estimasi Biaya Isi Bensin</h3>
+              </div>
+              <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6">
+                <div className="flex flex-col sm:flex-row sm:items-end gap-4 mb-4">
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Pilih Merk & Varian Bensin</label>
+                    <select
+                      value={selectedFuelId}
+                      onChange={e => setSelectedFuelId(e.target.value)}
+                      className="w-full px-3 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-green-500"
+                    >
+                      <option value="">Pilih bensin...</option>
+                      {fuelPrices.map(fp => (
+                        <option key={fp.id} value={fp.id}>
+                          {fp.fuel_brand?.name || 'Unknown'} (Oktan {fp.fuel_brand?.octane}) - Rp {fp.price_per_liter.toLocaleString('id-ID')}/L
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                {selectedFuelId && (() => {
+                  const selectedFuel = fuelPrices.find(fp => fp.id === selectedFuelId);
+                  if (!selectedFuel) return null;
+                  const totalCost = motorcycle.fuel_tank_capacity! * selectedFuel.price_per_liter;
+                  const fullRange = motorcycle.fuel_efficiency ? (motorcycle.fuel_efficiency * motorcycle.fuel_tank_capacity!) : null;
+                  return (
+                    <div className="space-y-3">
+                      <div className="bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl p-5">
+                        <p className="text-sm text-emerald-600 dark:text-emerald-400 font-medium">Total Isi Penuh ({motorcycle.fuel_tank_capacity} L)</p>
+                        <p className="text-3xl font-black text-emerald-700 dark:text-emerald-300 mt-1">
+                          Rp {totalCost.toLocaleString('id-ID')}
+                        </p>
+                        <div className="mt-3 flex flex-wrap gap-3 text-xs text-emerald-600 dark:text-emerald-400">
+                          <span className="bg-emerald-100 dark:bg-emerald-900/40 px-2.5 py-1 rounded-full font-medium">
+                            {selectedFuel.fuel_brand?.name} (Oktan {selectedFuel.fuel_brand?.octane})
+                          </span>
+                          <span className="bg-emerald-100 dark:bg-emerald-900/40 px-2.5 py-1 rounded-full font-medium">
+                            Rp {selectedFuel.price_per_liter.toLocaleString('id-ID')}/Liter
+                          </span>
+                          {fullRange && (
+                            <span className="bg-emerald-100 dark:bg-emerald-900/40 px-2.5 py-1 rounded-full font-medium">
+                              Jarak tempuh ~{Math.round(fullRange)} km
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      {/* Price comparison table */}
+                      <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+                        <table className="w-full text-sm">
+                          <thead className="bg-gray-50 dark:bg-gray-800">
+                            <tr>
+                              <th className="text-left px-4 py-2 font-medium text-gray-600 dark:text-gray-300">Bensin</th>
+                              <th className="text-right px-4 py-2 font-medium text-gray-600 dark:text-gray-300">Harga/L</th>
+                              <th className="text-right px-4 py-2 font-medium text-gray-600 dark:text-gray-300">Isi Penuh</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                            {fuelPrices.map(fp => (
+                              <tr key={fp.id} className={fp.id === selectedFuelId ? 'bg-green-50 dark:bg-green-900/10' : ''}>
+                                <td className="px-4 py-2 text-gray-900 dark:text-white">{fp.fuel_brand?.name || 'Unknown'}</td>
+                                <td className="px-4 py-2 text-right text-gray-600 dark:text-gray-400">Rp {fp.price_per_liter.toLocaleString('id-ID')}</td>
+                                <td className="px-4 py-2 text-right font-semibold text-gray-900 dark:text-white">Rp {(fp.price_per_liter * motorcycle.fuel_tank_capacity!).toLocaleString('id-ID')}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                      <p className="text-xs text-gray-400 dark:text-gray-500">* Harga per liter wilayah Jawa, dapat berbeda di daerah lain.</p>
+                    </div>
+                  );
+                })()}
+              </div>
+            </div>
+          )}
 
           {/* Oil Recommendation */}
           <div>

@@ -5,7 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
 import {
-  LayoutDashboard, Droplets, Fuel, LogOut, Shield, Menu, X, Bike, Tags
+  LayoutDashboard, Droplets, Fuel, LogOut, Shield, Menu, X, Bike, Tags, Banknote
 } from 'lucide-react';
 
 const navItems = [
@@ -14,6 +14,7 @@ const navItems = [
   { href: '/admin/motorcycles', label: 'Motorcycles', icon: Bike },
   { href: '/admin/oils', label: 'Oil Brands', icon: Droplets },
   { href: '/admin/fuels', label: 'Fuel Brands', icon: Fuel },
+  { href: '/admin/fuel-prices', label: 'Fuel Prices', icon: Banknote },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

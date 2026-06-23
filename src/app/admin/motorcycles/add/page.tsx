@@ -50,7 +50,8 @@ export default function AddMotorcyclePage() {
     category: 'matic',
     image_url: '',
     affiliate_url: '',
-    fuel_efficiency: ''
+    fuel_efficiency: '',
+    fuel_tank_capacity: ''
   });
 
   useEffect(() => {
@@ -95,6 +96,7 @@ export default function AddMotorcyclePage() {
 
       if (cdnUrl) insertPayload.cdn_url = cdnUrl;
       if (formData.fuel_efficiency) insertPayload.fuel_efficiency = parseFloat(formData.fuel_efficiency);
+      if (formData.fuel_tank_capacity) insertPayload.fuel_tank_capacity = parseFloat(formData.fuel_tank_capacity);
 
       const { error: mtError } = await supabase.from('motorcycles').insert(insertPayload);
 
@@ -225,6 +227,12 @@ export default function AddMotorcyclePage() {
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Efisiensi BBM (km/L)</label>
             <input type="number" name="fuel_efficiency" step="0.1" min="0" placeholder="Cth: 52.3" value={formData.fuel_efficiency} onChange={handleChange} className="w-full px-3 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+
+          {/* Fuel Tank Capacity */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Kapasitas Tangki (Liter)</label>
+            <input type="number" name="fuel_tank_capacity" step="0.1" min="0" placeholder="Cth: 5.5" value={formData.fuel_tank_capacity} onChange={handleChange} className="w-full px-3 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
 
           {/* Affiliate URL */}

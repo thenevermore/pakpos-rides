@@ -1,4 +1,4 @@
-import { Brand, Motorcycle, MotorcycleDetail, FuelBrand, OilBrand } from './types';
+import { Brand, Motorcycle, MotorcycleDetail, FuelBrand, OilBrand, FuelPrice } from './types';
 import { brands as localBrands, motorcycles as localMotorcycles, fuelBrands as localFuelBrands, oilBrands as localOilBrands, getKnowledgeBase } from './seed-data';
 import { supabase } from './supabase';
 
@@ -189,4 +189,46 @@ export function getCompressionLevel(ratio: string): { level: string; color: stri
   if (val < 10.5) return { level: 'Sedang', color: 'text-yellow-600 dark:text-yellow-400', description: 'Kompresi sedang, direkomendasikan bensin oktan menengah' };
   if (val < 11.5) return { level: 'Tinggi', color: 'text-orange-600 dark:text-orange-400', description: 'Kompresi tinggi, memerlukan bensin oktan tinggi' };
   return { level: 'Sangat Tinggi', color: 'text-red-600 dark:text-red-400', description: 'Kompresi sangat tinggi, wajib menggunakan bensin premium' };
+}
+
+// ========== FUEL PRICES ==========
+
+export async function getFuelPrices(): Promise<FuelPrice[]> {
+  if (!hasSupabase) return localFuelBrands.map(f => ({
+    id: `fp_${f.id}`,
+    fuel_brand_id: f.id,
+    price_per_liter: f.price_per_liter || 0,
+    region: 'Jawa',
+    last_updated: new Date().toISOString(),
+  }));
+
+  const { data, error } = await supabase
+    .from('fuel_prices')
+    .select('*, fuel_brand:fuel_brands(*)')
+    .order('price_per_liter');
+
+  if (error || !data) {
+    console.error('Supabase getFuelPrices error:', error?.message);
+    return [];
+  }
+  return data as FuelPrice[];
+}
+
+export async function getAllMotorcyclesWithBrands(): Promise<(Motorcycle & { brand?: Brand })[]> {
+  if (!hasSupabase) return localMotorcycles.map(m => ({ ...m, brand: localBrands.find(b => b.id === m.brand_id) }));
+
+  const { data: motors } = await supabase.from('motorcycles').select('*').order('name');
+  const { data: brs } = await supabase.from('brands').select('*');
+  if (!motors) return [];
+  return motors.map(m => ({ ...(m as Motorcycle), brand: (brs as Brand[])?.find(b => b.id === m.brand_id) }));
+}
+
+export async function getKnowledgeBaseData(): Promise<{ motorcycle_id: string; ideal_octane: number }[]> {
+  if (!hasSupabase) return localMotorcycles.map(m => {
+    const kb = getKnowledgeBase(m);
+    return { motorcycle_id: m.id, ideal_octane: kb.ideal_octane };
+  });
+
+  const { data } = await supabase.from('knowledge_base').select('motorcycle_id, ideal_octane');
+  return (data || []) as { motorcycle_id: string; ideal_octane: number }[];
 }
