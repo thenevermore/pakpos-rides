@@ -8,6 +8,7 @@ import {
   Info, Zap, Fuel, Droplets, Tag, Cog, Settings,
   Calendar, Gauge, Sun, Route, ShoppingBag, ExternalLink, AlertTriangle, Send, Loader2, Check, GaugeCircle, Banknote
 } from 'lucide-react';
+import { fePointLight } from 'framer-motion/client';
 
 interface TabDetailProps {
   motorcycle: MotorcycleDetail;
@@ -257,7 +258,8 @@ export default function TabDetail({ motorcycle, fuelPrices = [] }: TabDetailProp
                           </tbody>
                         </table>
                       </div>
-                      <p className="text-xs text-gray-400 dark:text-gray-500">* Harga per liter wilayah Jawa, dapat berbeda di daerah lain.</p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500">* Harga per liter wilayah DKI/Jawa Barat, dapat berbeda di daerah lain.</p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500">** Harga terbaru saat ini belum tersedia</p>
                     </div>
                   );
                 })()}
