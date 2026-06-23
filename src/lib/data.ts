@@ -199,12 +199,15 @@ export async function getFuelPrices(): Promise<FuelPrice[]> {
     fuel_brand_id: f.id,
     price_per_liter: f.price_per_liter || 0,
     region: 'Jawa',
+    is_active: true,
     last_updated: new Date().toISOString(),
+    last_verified: null,
   }));
 
   const { data, error } = await supabase
     .from('fuel_prices')
     .select('*, fuel_brand:fuel_brands(*)')
+    .eq('is_active', true)
     .order('price_per_liter');
 
   if (error || !data) {

@@ -43,7 +43,9 @@ export interface FuelPrice {
   fuel_brand_id: string;
   price_per_liter: number;
   region: string;
+  is_active: boolean;
   last_updated: string;
+  last_verified: string | null;
   fuel_brand?: FuelBrand;
 }
 
