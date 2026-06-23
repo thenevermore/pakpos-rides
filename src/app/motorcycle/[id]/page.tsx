@@ -1,8 +1,9 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getMotorcycleById, getFuelPrices } from '@/lib/data';
+import { getMotorcycleById, getFuelPrices, formatPrice } from '@/lib/data';
 import TabDetail from '@/components/TabDetail';
 import LogoImage from '@/components/LogoImage';
+import ShareButton from '@/components/ShareButton';
 import { ArrowLeft, Bike } from 'lucide-react';
 
 export default async function MotorcyclePage({ params }: { params: Promise<{ id: string }> }) {
@@ -49,7 +50,7 @@ export default async function MotorcyclePage({ params }: { params: Promise<{ id:
                 bgColor="bg-gradient-to-br from-blue-500 to-indigo-700"
               />
             )}
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <p className="text-xs text-gray-400 dark:text-gray-500 font-mono">{motorcycle.model_code}</p>
               <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white mt-0.5">
                 {motorcycle.name}
@@ -57,6 +58,12 @@ export default async function MotorcyclePage({ params }: { params: Promise<{ id:
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                 {motorcycle.brand?.name} &middot; {motorcycle.category.charAt(0).toUpperCase() + motorcycle.category.slice(1)}
               </p>
+            </div>
+            <div className="flex-shrink-0">
+              <ShareButton
+                title={motorcycle.name}
+                text={`Cek ${motorcycle.name} - ${formatPrice(motorcycle.latest_price)} | Rekomendasi bensin & oli terbaik`}
+              />
             </div>
           </div>
         </div>
