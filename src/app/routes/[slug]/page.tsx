@@ -116,7 +116,7 @@ export default async function RouteDetailPage({ params }: { params: Promise<{ sl
           {/* Floating CTA */}
           <div className="mt-8 md:mt-0 md:absolute md:right-8 lg:right-0 md:-bottom-10 flex justify-center md:block w-full md:w-auto">
             <a 
-              href={`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(route.origin)}&destination=${encodeURIComponent(route.destination)}&travelmode=driving&avoid=tolls,highways`}
+              href={`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(route.origin)}&destination=${encodeURIComponent(route.destination)}&travelmode=driving`}
               target="_blank" rel="noopener noreferrer"
               className="flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-500 text-white px-8 md:px-10 py-4 md:py-6 rounded-3xl font-black text-lg md:text-xl shadow-[0_20px_40px_-15px_rgba(37,99,235,0.7)] transition-all hover:-translate-y-2 hover:shadow-[0_30px_50px_-15px_rgba(37,99,235,0.8)] border border-blue-400/30 w-full md:w-auto"
             >
@@ -137,7 +137,7 @@ export default async function RouteDetailPage({ params }: { params: Promise<{ sl
             loading="lazy" 
             allowFullScreen 
             referrerPolicy="no-referrer-when-downgrade"
-            src={`https://www.google.com/maps/embed/v1/directions?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&origin=${encodeURIComponent(route.origin)}&destination=${encodeURIComponent(route.destination)}&mode=driving&avoid=tolls,highways`}
+            src={`https://www.google.com/maps/embed/v1/directions?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&origin=${encodeURIComponent(route.origin)}&destination=${encodeURIComponent(route.destination)}&mode=driving&avoid=tolls%7Chighways`}
           ></iframe>
         </div>
 
