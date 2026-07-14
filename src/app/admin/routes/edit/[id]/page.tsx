@@ -35,8 +35,10 @@ export default function EditRoutePage({ params }: { params: { id: string } }) {
         .eq('id', params.id)
         .single();
         
-      if (routeError || !routeData) {
-        setError('Rute tidak ditemukan.');
+      if (routeError) {
+        setError(`Supabase Error: ${routeError.message} (Code: ${routeError.code})`);
+      } else if (!routeData) {
+        setError('Rute tidak ditemukan di database.');
       } else {
         setRoute(routeData);
         setTitle(routeData.title);

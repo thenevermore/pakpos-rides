@@ -24,7 +24,7 @@ export default async function RouteDetailPage({ params }: { params: { slug: stri
     .single();
 
   if (error) {
-    console.error("Error fetching route for slug:", params.slug, error);
+    return <div className="p-20 text-center text-red-500 font-bold">Database Error: {error.message} (Code: {error.code})</div>;
   }
 
   if (!routeData) {
