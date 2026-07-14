@@ -22,7 +22,7 @@ export default async function GearsPage() {
     return acc;
   }, {} as Record<string, TouringGear[]>);
 
-  const formatRupiah = (price: string) => {
+  const formatRupiah = (price: string | null) => {
     if (!price) return price;
     const num = parseInt(price.replace(/\D/g, ''), 10);
     if (isNaN(num)) return price;
