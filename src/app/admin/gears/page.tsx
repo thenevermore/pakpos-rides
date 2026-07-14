@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { TouringGear } from '@/lib/types';
 import { Plus, Loader2, Edit, Trash2 } from 'lucide-react';
+import { uploadToCdn } from '@/lib/cdn-upload';
 
 export default function AdminGearsPage() {
   const [gears, setGears] = useState<TouringGear[]>([]);
@@ -20,6 +21,7 @@ export default function AdminGearsPage() {
     price_estimation: '',
     affiliate_url: '',
     image_url: '',
+    cdn_url: '',
     admin_review: ''
   });
 
@@ -39,6 +41,11 @@ export default function AdminGearsPage() {
     setSaving(true);
 
     try {
+      let cdnUrl = formData.cdn_url || null;
+      if (formData.image_url && !formData.image_url.includes('imagekit.io')) {
+        cdnUrl = await uploadToCdn(formData.image_url, 'pakpos-rides/gears');
+      }
+
       if (formData.id) {
         // Update
         const { error } = await supabase.from('touring_gears').update({
@@ -48,18 +55,19 @@ export default function AdminGearsPage() {
           price_estimation: formData.price_estimation,
           affiliate_url: formData.affiliate_url,
           image_url: formData.image_url,
+          cdn_url: cdnUrl,
           admin_review: formData.admin_review
         }).eq('id', formData.id);
         if (error) throw error;
       } else {
         // Insert
-        const insertData = { ...formData, id: `gear_${Math.random().toString(36).substr(2, 6)}` };
+        const insertData = { ...formData, id: `gear_${Math.random().toString(36).substr(2, 6)}`, cdn_url: cdnUrl };
         const { error } = await supabase.from('touring_gears').insert(insertData);
         if (error) throw error;
       }
       await fetchGears();
       setShowForm(false);
-      setFormData({ id: '', category: 'Helm', name: '', description: '', price_estimation: '', affiliate_url: '', image_url: '', admin_review: '' });
+      setFormData({ id: '', category: 'Helm', name: '', description: '', price_estimation: '', affiliate_url: '', image_url: '', cdn_url: '', admin_review: '' });
     } catch (err: any) {
       alert(err.message || 'Gagal menyimpan');
     } finally {
@@ -76,6 +84,7 @@ export default function AdminGearsPage() {
       price_estimation: gear.price_estimation || '',
       affiliate_url: gear.affiliate_url || '',
       image_url: gear.image_url || '',
+      cdn_url: gear.cdn_url || '',
       admin_review: gear.admin_review || ''
     });
     setShowForm(true);
@@ -97,7 +106,7 @@ export default function AdminGearsPage() {
         </div>
         <button
           onClick={() => {
-            setFormData({ id: '', category: 'Helm', name: '', description: '', price_estimation: '', affiliate_url: '', image_url: '', admin_review: '' });
+            setFormData({ id: '', category: 'Helm', name: '', description: '', price_estimation: '', affiliate_url: '', image_url: '', cdn_url: '', admin_review: '' });
             setShowForm(true);
           }}
           className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-xl transition-colors shadow-sm"
@@ -163,7 +172,7 @@ export default function AdminGearsPage() {
           {gears.map(gear => (
             <div key={gear.id} className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-5 flex gap-4">
               <div className="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-xl flex-shrink-0 p-2">
-                {gear.image_url && <img src={gear.image_url} alt={gear.name} className="w-full h-full object-contain" />}
+                {(gear.cdn_url || gear.image_url) && <img src={gear.cdn_url || gear.image_url!} alt={gear.name} className="w-full h-full object-contain" />}
               </div>
               <div className="flex-1">
                 <p className="text-xs text-blue-600 font-bold mb-1">{gear.category}</p>

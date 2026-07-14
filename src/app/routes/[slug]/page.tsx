@@ -169,9 +169,9 @@ export default async function RouteDetailPage({ params }: { params: Promise<{ sl
                     {renderedGears.map(gear => (
                       <a key={gear.id} href={gear.affiliate_url || '#'} target="_blank" rel="noopener noreferrer" className="group flex flex-col bg-white/5 hover:bg-white/10 border border-white/10 p-5 rounded-3xl transition-all hover:-translate-y-1">
                         <div className="flex items-center gap-4 mb-4">
-                          {gear.image_url ? (
+                          {(gear.cdn_url || gear.image_url) ? (
                             <div className="w-20 h-20 rounded-2xl bg-white p-2 shadow-inner flex-shrink-0">
-                              <img src={gear.image_url} alt={gear.name} className="w-full h-full object-contain mix-blend-multiply" />
+                              <img src={gear.cdn_url || gear.image_url!} alt={gear.name} className="w-full h-full object-contain mix-blend-multiply" />
                             </div>
                           ) : (
                             <div className="w-20 h-20 rounded-2xl bg-white/10 flex items-center justify-center flex-shrink-0" />
@@ -230,9 +230,9 @@ export default async function RouteDetailPage({ params }: { params: Promise<{ sl
                 <div className="space-y-4 relative z-10">
                   {gears.map(gear => (
                     <a key={gear.id} href={gear.affiliate_url || '#'} target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 bg-black/20 hover:bg-black/40 p-4 rounded-2xl transition-colors">
-                      {gear.image_url ? (
+                      {(gear.cdn_url || gear.image_url) ? (
                         <div className="w-14 h-14 rounded-xl bg-white p-1.5 flex-shrink-0">
-                          <img src={gear.image_url} alt={gear.name} className="w-full h-full object-contain mix-blend-multiply" />
+                          <img src={gear.cdn_url || gear.image_url!} alt={gear.name} className="w-full h-full object-contain mix-blend-multiply" />
                         </div>
                       ) : (
                         <div className="w-14 h-14 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0" />

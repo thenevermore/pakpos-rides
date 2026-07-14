@@ -56,8 +56,8 @@ export default async function GearsPage() {
                 {items.map(gear => (
                   <div key={gear.id} className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 p-6 flex flex-col group hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                     <div className="h-40 bg-gray-50 dark:bg-gray-800 rounded-2xl mb-4 p-4 flex items-center justify-center relative overflow-hidden">
-                      {gear.image_url ? (
-                        <img src={gear.image_url} alt={gear.name} className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" />
+                      {(gear.cdn_url || gear.image_url) ? (
+                        <img src={gear.cdn_url || gear.image_url!} alt={gear.name} className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" />
                       ) : (
                         <ShoppingBag className="w-10 h-10 text-gray-300" />
                       )}
