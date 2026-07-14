@@ -64,7 +64,7 @@ export default async function RouteDetailPage({ params }: { params: Promise<{ sl
   return (
     <div className="bg-white dark:bg-[#0a0a0a] min-h-screen pb-20">
       {/* Premium Hero Section */}
-      <div className="relative w-full h-[60vh] md:h-[70vh] flex items-end pb-16 md:pb-24">
+      <div className="relative w-full min-h-[60vh] md:min-h-[70vh] flex items-end pb-16 md:pb-24 pt-32">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           {route.cover_image_url ? (
@@ -92,7 +92,7 @@ export default async function RouteDetailPage({ params }: { params: Promise<{ sl
             </div>
           </div>
 
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-6 leading-tight drop-shadow-xl">
+          <h1 className="text-3xl md:text-5xl lg:text-5xl xl:text-6xl font-black text-white mb-6 leading-tight drop-shadow-xl">
             {route.title}
           </h1>
 
