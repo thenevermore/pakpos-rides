@@ -5,7 +5,7 @@ import { MapPin, Clock, Navigation, Star, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import RouteReportForm from '@/components/RouteReportForm';
 
-export const revalidate = 3600; // Revalidate every hour
+export const revalidate = 0; // Disable cache so new routes appear instantly
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const { data } = await supabase.from('touring_routes').select('title, origin, destination').eq('slug', params.slug).single();
@@ -17,11 +17,15 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 }
 
 export default async function RouteDetailPage({ params }: { params: { slug: string } }) {
-  const { data: routeData } = await supabase
+  const { data: routeData, error } = await supabase
     .from('touring_routes')
     .select('*')
     .eq('slug', params.slug)
     .single();
+
+  if (error) {
+    console.error("Error fetching route for slug:", params.slug, error);
+  }
 
   if (!routeData) {
     notFound();

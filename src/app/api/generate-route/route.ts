@@ -117,12 +117,34 @@ Instruksi Format:
       articleContent = articleContent.replace(/\`\`\`html/g, '').replace(/\`\`\`/g, '').trim();
     }
 
-    // 5. Construct final response
+    // 5. Fetch Cover Image for Destination
+    let coverImageUrl = null;
+    try {
+      const destPlaceRes = await mapsClient.textSearch({
+        params: {
+          query: destination + ' wisata',
+          key: GOOGLE_MAPS_API_KEY,
+        },
+      });
+
+      if (destPlaceRes.data.results && destPlaceRes.data.results.length > 0) {
+        const destPlace = destPlaceRes.data.results[0];
+        if (destPlace.photos && destPlace.photos.length > 0) {
+          const photoRef = destPlace.photos[0].photo_reference;
+          coverImageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1200&photo_reference=${photoRef}&key=${GOOGLE_MAPS_API_KEY}`;
+        }
+      }
+    } catch (e) {
+      console.error('Error fetching cover image:', e);
+    }
+
+    // 6. Construct final response
     return NextResponse.json({
       distanceText,
       durationText,
       checkpoints,
       articleContent,
+      coverImageUrl,
     });
 
   } catch (error: any) {

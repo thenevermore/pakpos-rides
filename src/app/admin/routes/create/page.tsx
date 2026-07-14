@@ -40,6 +40,7 @@ export default function RouteGeneratorPage() {
     durationText: string;
     checkpoints: any[];
     articleContent: string;
+    coverImageUrl?: string | null;
   } | null>(null);
   
   // Edited state (Step 3)
@@ -145,7 +146,7 @@ export default function RouteGeneratorPage() {
         recommended_motorcycles: [motorcycleType],
         article_content: articleContent,
         checkpoints: generatedData.checkpoints,
-        cover_image_url: null,
+        cover_image_url: generatedData.coverImageUrl || null,
         map_embed_url: null,
       });
 
