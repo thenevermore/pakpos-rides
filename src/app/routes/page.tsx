@@ -7,6 +7,8 @@ export const metadata = {
   description: 'Temukan rekomendasi rute touring dan sunmori terbaik lengkap dengan peta, jarak, dan titik istirahat favorit anak motor.',
 };
 
+export const revalidate = 0; // Disable cache to ensure slug updates reflect immediately
+
 export default async function RoutesPage() {
   const { data: routes } = await supabase
     .from('touring_routes')

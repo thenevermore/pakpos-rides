@@ -61,174 +61,200 @@ export default async function RouteDetailPage({ params }: { params: Promise<{ sl
   // Even indexes (0, 2, 4) are HTML strings. Odd indexes (1, 3) are comma-separated IDs.
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-      <Link href="/routes" className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors mb-8">
-        <ArrowLeft className="w-4 h-4" /> Semua Rute
-      </Link>
-
-      {/* Header Section */}
-      <div className="mb-10 text-center">
-        <div className="inline-flex items-center justify-center gap-2 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full text-sm font-bold uppercase tracking-wider mb-6">
-          <Navigation className="w-4 h-4" /> Rute {route.difficulty}
+    <div className="bg-white dark:bg-[#0a0a0a] min-h-screen pb-20">
+      {/* Premium Hero Section */}
+      <div className="relative w-full h-[60vh] md:h-[70vh] flex items-end pb-16 md:pb-24">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          {route.cover_image_url ? (
+            <img src={route.cover_image_url} alt={route.title} className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-gray-800 to-black"></div>
+          )}
+          {/* Gradients for readability */}
+          <div className="absolute inset-0 bg-black/40"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-white via-white/10 to-transparent dark:from-[#0a0a0a] dark:via-[#0a0a0a]/20"></div>
         </div>
-        <h1 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white mb-6 leading-tight">
-          {route.title}
-        </h1>
-        <div className="flex flex-wrap items-center justify-center gap-4 text-sm font-medium text-gray-500 mb-6">
-            <div className="flex items-center gap-1.5">
-              <Navigation className="w-4 h-4 text-blue-400" />
-              <span>{route.distance_text}</span>
+
+        {/* Hero Content */}
+        <div className="relative z-10 max-w-5xl mx-auto px-4 w-full">
+          <Link href="/routes" className="inline-flex items-center gap-2 text-sm font-bold text-white/80 hover:text-white transition-colors mb-6 backdrop-blur-md bg-white/10 px-4 py-2 rounded-full border border-white/20">
+            <ArrowLeft className="w-4 h-4" /> Kembali ke Eksplorasi
+          </Link>
+          
+          <div className="flex flex-wrap items-center gap-3 mb-4">
+            <div className="inline-flex items-center justify-center gap-2 px-3 py-1 bg-blue-600 text-white rounded-md text-xs font-black uppercase tracking-widest shadow-lg">
+              {route.origin} &rarr; {route.destination}
             </div>
-            <span className="text-gray-500">&bull;</span>
-            <div className="flex items-center gap-1.5">
-              <Clock className="w-4 h-4 text-blue-400" />
-              <span>{route.duration_text}</span>
+            <div className="inline-flex items-center justify-center gap-1.5 px-3 py-1 bg-black/50 backdrop-blur-md text-white border border-white/20 rounded-md text-xs font-bold uppercase tracking-widest">
+              <Navigation className="w-3.5 h-3.5 text-blue-400" /> {route.difficulty.split('•')[0]}
             </div>
-            {route.created_at && (
-              <>
-                <span className="text-gray-500">&bull;</span>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-gray-400">Update: {new Date(route.created_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+          </div>
+
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-6 leading-tight drop-shadow-xl">
+            {route.title}
+          </h1>
+
+          <div className="flex flex-wrap items-center gap-6 text-white/90">
+            <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md px-4 py-2 rounded-xl border border-white/10">
+              <MapPin className="w-5 h-5 text-red-400" />
+              <div>
+                <p className="text-[10px] uppercase tracking-widest font-bold opacity-70">Jarak</p>
+                <p className="font-bold text-sm">{route.distance_text}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md px-4 py-2 rounded-xl border border-white/10">
+              <Clock className="w-5 h-5 text-blue-400" />
+              <div>
+                <p className="text-[10px] uppercase tracking-widest font-bold opacity-70">Waktu</p>
+                <p className="font-bold text-sm">{route.duration_text}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Floating CTA */}
+          <div className="absolute right-4 -bottom-8 md:right-8 lg:right-0 md:-bottom-10">
+            <a 
+              href={`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(route.origin)}&destination=${encodeURIComponent(route.destination)}&travelmode=driving`}
+              target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-3 bg-blue-600 hover:bg-blue-500 text-white px-6 md:px-10 py-4 md:py-6 rounded-3xl font-black text-lg md:text-xl shadow-[0_20px_40px_-15px_rgba(37,99,235,0.7)] transition-all hover:-translate-y-2 hover:shadow-[0_30px_50px_-15px_rgba(37,99,235,0.8)] border border-blue-400/30"
+            >
+              <Navigation className="w-6 h-6 md:w-8 md:h-8" />
+              Mulai Navigasi
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-5xl mx-auto px-4 mt-16 md:mt-24">
+        {/* Interactive Google Map Embed */}
+        <div className="w-full h-80 md:h-[450px] bg-gray-200 dark:bg-gray-800 rounded-3xl overflow-hidden mb-16 shadow-2xl border-4 border-white dark:border-gray-900">
+          <iframe 
+            width="100%" 
+            height="100%" 
+            style={{ border: 0 }} 
+            loading="lazy" 
+            allowFullScreen 
+            referrerPolicy="no-referrer-when-downgrade"
+            src={`https://www.google.com/maps/embed/v1/directions?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&origin=${encodeURIComponent(route.origin)}&destination=${encodeURIComponent(route.destination)}&mode=driving`}
+          ></iframe>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+          {/* Main Article */}
+          <div className="lg:col-span-2 prose prose-lg dark:prose-invert prose-blue max-w-none prose-headings:font-black prose-headings:tracking-tight prose-a:text-blue-600 prose-img:rounded-3xl prose-img:shadow-lg prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-p:leading-relaxed">
+            {articleParts.map((part, index) => {
+              if (index % 2 === 0) {
+                return <div key={index} dangerouslySetInnerHTML={{ __html: part }} />;
+              }
+              
+              const ids = part.split(',');
+              const renderedGears = gears.filter(g => ids.includes(g.id));
+              if (renderedGears.length === 0) return null;
+
+              return (
+                <div key={index} className="not-prose my-12 bg-gradient-to-br from-gray-900 to-black dark:from-gray-800 dark:to-gray-900 rounded-[2rem] p-8 md:p-10 text-white shadow-2xl border border-gray-800 dark:border-gray-700 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+                  
+                  <h3 className="font-black mb-8 text-2xl flex items-center gap-3 relative z-10">
+                    <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center">
+                      <Star className="w-5 h-5 fill-amber-500 text-amber-500" />
+                    </div>
+                    Gear Pilihan Editor
+                  </h3>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 relative z-10">
+                    {renderedGears.map(gear => (
+                      <a key={gear.id} href={gear.affiliate_url || '#'} target="_blank" rel="noopener noreferrer" className="group flex flex-col bg-white/5 hover:bg-white/10 border border-white/10 p-5 rounded-3xl transition-all hover:-translate-y-1">
+                        <div className="flex items-center gap-4 mb-4">
+                          {gear.image_url ? (
+                            <div className="w-20 h-20 rounded-2xl bg-white p-2 shadow-inner flex-shrink-0">
+                              <img src={gear.image_url} alt={gear.name} className="w-full h-full object-contain mix-blend-multiply" />
+                            </div>
+                          ) : (
+                            <div className="w-20 h-20 rounded-2xl bg-white/10 flex items-center justify-center flex-shrink-0" />
+                          )}
+                          <div>
+                            <p className="text-[10px] text-blue-300 font-bold tracking-widest uppercase mb-1">{gear.category}</p>
+                            <p className="text-base font-bold line-clamp-2 leading-tight group-hover:text-blue-400 transition-colors">{gear.name}</p>
+                          </div>
+                        </div>
+                        <div className="mt-auto w-full py-2 bg-blue-600/20 group-hover:bg-blue-600 text-blue-300 group-hover:text-white rounded-xl text-xs font-bold text-center transition-colors">
+                          Cek Harga Promo
+                        </div>
+                      </a>
+                    ))}
+                  </div>
                 </div>
-              </>
-            )}
+              );
+            })}
           </div>
-        
-        <div className="flex flex-wrap items-center justify-center gap-4 md:gap-8 text-gray-600 dark:text-gray-300">
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-              <MapPin className="w-5 h-5 text-red-500" />
-            </div>
-            <div className="text-left">
-              <p className="text-xs text-gray-500">Jarak Tempuh</p>
-              <p className="font-bold text-gray-900 dark:text-white">{route.distance_text}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-              <Clock className="w-5 h-5 text-blue-500" />
-            </div>
-            <div className="text-left">
-              <p className="text-xs text-gray-500">Estimasi Waktu</p>
-              <p className="font-bold text-gray-900 dark:text-white">{route.duration_text}</p>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Hero Image or Map Embed Placeholder */}
-      <div className="w-full h-64 md:h-96 bg-gray-200 dark:bg-gray-800 rounded-3xl overflow-hidden mb-12 shadow-md relative">
-        {route.cover_image_url ? (
-          <img src={route.cover_image_url} alt={route.title} className="w-full h-full object-cover" />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-tr from-gray-800 to-gray-900 text-white p-8 text-center">
-            <div>
-              <MapPin className="w-16 h-16 mx-auto mb-4 opacity-50" />
-              <p className="text-lg text-gray-400">Dari <strong className="text-white">{route.origin}</strong> menuju <strong className="text-white">{route.destination}</strong></p>
-            </div>
-          </div>
-        )}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-        {/* Main Article */}
-        <div className="lg:col-span-2 prose prose-lg dark:prose-invert prose-blue max-w-none prose-headings:font-bold prose-a:text-blue-600 prose-img:rounded-2xl">
-          {articleParts.map((part, index) => {
-            // If it's an even index, it's normal HTML content
-            if (index % 2 === 0) {
-              return <div key={index} dangerouslySetInnerHTML={{ __html: part }} />;
-            }
-            
-            // If it's an odd index, it's a list of Gear IDs (from our shortcode)
-            const ids = part.split(',');
-            const renderedGears = gears.filter(g => ids.includes(g.id));
-            
-            if (renderedGears.length === 0) return null;
-
-            return (
-              <div key={index} className="not-prose my-10 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-6 md:p-8 text-white shadow-xl">
-                <h3 className="font-bold mb-6 text-xl flex items-center gap-2">
-                  <Star className="w-6 h-6 fill-amber-400 text-amber-400" /> Rekomendasi Gear Pilihan
+          {/* Sidebar */}
+          <div className="space-y-10">
+            {/* Premium Checkpoints */}
+            {route.checkpoints && route.checkpoints.length > 0 && (
+              <div>
+                <h3 className="font-black text-2xl text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                    <MapPin className="w-5 h-5 text-red-600 dark:text-red-400" /> 
+                  </div>
+                  Pit Stop Wajib
                 </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {renderedGears.map(gear => (
-                    <a key={gear.id} href={gear.affiliate_url || '#'} target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 bg-white/10 hover:bg-white/20 p-4 rounded-2xl transition-all hover:scale-[1.02]">
+                <div className="space-y-4">
+                  {route.checkpoints.map((cp, idx) => (
+                    <div key={idx} className="bg-white dark:bg-[#111] rounded-3xl border border-gray-200 dark:border-gray-800 p-5 shadow-sm hover:shadow-md transition-shadow flex items-start gap-4">
+                      <div className="w-12 h-12 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center flex-shrink-0 text-xl font-black text-gray-400">
+                        {idx + 1}
+                      </div>
+                      <div>
+                        <p className="font-bold text-gray-900 dark:text-white text-lg leading-tight mb-1">{cp.name}</p>
+                        <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-3 line-clamp-2">{cp.vicinity}</p>
+                        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 dark:bg-amber-900/20 rounded-lg text-xs font-black text-amber-600 dark:text-amber-400">
+                          <Star className="w-3.5 h-3.5 fill-current" /> {cp.rating} <span className="opacity-70 font-medium">({cp.user_ratings_total})</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Fallback Gears Sidebar */}
+            {gears.length > 0 && matches.length === 0 && (
+              <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-8 text-white shadow-2xl relative overflow-hidden">
+                <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+                <h3 className="font-black mb-6 text-xl relative z-10">Rekomendasi Gear</h3>
+                <div className="space-y-4 relative z-10">
+                  {gears.map(gear => (
+                    <a key={gear.id} href={gear.affiliate_url || '#'} target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 bg-black/20 hover:bg-black/40 p-4 rounded-2xl transition-colors">
                       {gear.image_url ? (
-                        <div className="w-16 h-16 rounded-xl bg-white overflow-hidden flex-shrink-0">
-                          <img src={gear.image_url} alt={gear.name} className="w-full h-full object-contain" />
+                        <div className="w-14 h-14 rounded-xl bg-white p-1.5 flex-shrink-0">
+                          <img src={gear.image_url} alt={gear.name} className="w-full h-full object-contain mix-blend-multiply" />
                         </div>
                       ) : (
-                        <div className="w-16 h-16 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0" />
+                        <div className="w-14 h-14 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0" />
                       )}
                       <div>
-                        <p className="text-xs text-blue-200 font-medium mb-1">{gear.category}</p>
-                        <p className="text-base font-bold line-clamp-2 leading-tight">{gear.name}</p>
+                        <p className="text-[10px] text-blue-200 uppercase tracking-wider font-bold mb-0.5">{gear.category}</p>
+                        <p className="text-sm font-bold line-clamp-2 leading-tight">{gear.name}</p>
                       </div>
                     </a>
                   ))}
                 </div>
+                <Link href="/gears" className="inline-block w-full text-center py-3 bg-white text-blue-700 font-bold rounded-xl mt-6 hover:bg-gray-50 transition-colors relative z-10 shadow-lg">
+                  Lihat Semua Gear
+                </Link>
               </div>
-            );
-          })}
+            )}
+          </div>
         </div>
 
-        {/* Sidebar */}
-        <div className="space-y-8">
-          {/* Checkpoints Box */}
-          {route.checkpoints && route.checkpoints.length > 0 && (
-            <div className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
-              <h3 className="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-red-500" /> Titik Istirahat (Google Maps)
-              </h3>
-              <div className="space-y-4">
-                {route.checkpoints.map((cp, idx) => (
-                  <div key={idx} className="flex gap-3 items-start border-b border-gray-100 dark:border-gray-800 last:border-0 pb-4 last:pb-0">
-                    <div className="flex-1">
-                      <p className="font-semibold text-sm text-gray-900 dark:text-white">{cp.name}</p>
-                      <p className="text-xs text-gray-500 mb-1">{cp.vicinity}</p>
-                      <div className="flex items-center gap-1 text-xs font-medium text-amber-500">
-                        <Star className="w-3.5 h-3.5 fill-current" /> {cp.rating} ({cp.user_ratings_total} ulasan)
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Recommended Gears (Fallback Sidebar) */}
-          {gears.length > 0 && matches.length === 0 && (
-            <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-6 text-white shadow-lg">
-              <h3 className="font-bold mb-4 text-lg">Rekomendasi Gear</h3>
-              <div className="space-y-3">
-                {gears.map(gear => (
-                  <a key={gear.id} href={gear.affiliate_url || '#'} target="_blank" rel="noopener noreferrer" className="block bg-white/10 hover:bg-white/20 p-3 rounded-2xl transition-colors">
-                    <div className="flex items-center gap-3">
-                      {gear.image_url ? (
-                        <div className="w-12 h-12 rounded-xl bg-white overflow-hidden flex-shrink-0">
-                          <img src={gear.image_url} alt={gear.name} className="w-full h-full object-contain" />
-                        </div>
-                      ) : (
-                        <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0" />
-                      )}
-                      <div>
-                        <p className="text-xs text-blue-200">{gear.category}</p>
-                        <p className="text-sm font-bold line-clamp-1">{gear.name}</p>
-                      </div>
-                    </div>
-                  </a>
-                ))}
-              </div>
-              <Link href="/gears" className="block text-center text-sm font-medium text-white/80 hover:text-white mt-4 transition-colors">
-                Lihat Semua Gear &rarr;
-              </Link>
-            </div>
-          )}
+        {/* Report Form */}
+        <div className="mt-20 border-t border-gray-200 dark:border-gray-800 pt-16">
+          <RouteReportForm routeName={route.title} />
         </div>
       </div>
-
-      {/* Report Form */}
-      <RouteReportForm routeName={route.title} />
     </div>
   );
 }

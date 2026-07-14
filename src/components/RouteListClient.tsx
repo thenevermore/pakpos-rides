@@ -6,29 +6,31 @@ import { MapPin, ArrowRight } from 'lucide-react';
 import { TouringRoute } from '@/lib/types';
 
 export default function RouteListClient({ initialRoutes }: { initialRoutes: TouringRoute[] }) {
-  const [filter, setFilter] = useState('Semua');
+  const [filterOrigin, setFilterOrigin] = useState('Semua Lokasi');
 
-  const categories = ['Semua', 'Motocamping', 'Lintas Provinsi', 'Sunmori', 'Wisata Alam', 'Umum'];
+  // Extract unique origins from routes
+  const origins = ['Semua Lokasi', ...Array.from(new Set(initialRoutes.map(r => r.origin.split(' ')[0] || r.origin)))];
 
   const filteredRoutes = initialRoutes.filter(route => {
-    if (filter === 'Semua') return true;
-    return route.difficulty.includes(filter);
+    if (filterOrigin === 'Semua Lokasi') return true;
+    return route.origin.includes(filterOrigin);
   });
 
   return (
     <div>
-      <div className="flex flex-wrap gap-2 mb-10">
-        {categories.map(cat => (
+      <div className="flex flex-wrap items-center gap-3 mb-10">
+        <span className="text-sm font-bold text-gray-500 uppercase tracking-wider mr-2">Berangkat dari:</span>
+        {origins.map(origin => (
           <button
-            key={cat}
-            onClick={() => setFilter(cat)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-              filter === cat 
-                ? 'bg-blue-600 text-white shadow-md' 
-                : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-blue-500'
+            key={origin}
+            onClick={() => setFilterOrigin(origin)}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+              filterOrigin === origin 
+                ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-md scale-105' 
+                : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500'
             }`}
           >
-            {cat}
+            {origin}
           </button>
         ))}
       </div>
@@ -49,38 +51,65 @@ export default function RouteListClient({ initialRoutes }: { initialRoutes: Tour
               <Link 
                 key={route.id} 
                 href={`/routes/${route.slug}`}
-                className="group bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col"
+                className="group bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 flex flex-col"
               >
-                <div className="h-48 relative bg-gray-200 dark:bg-gray-800 overflow-hidden">
+                <div className="h-56 relative bg-gray-200 dark:bg-gray-800 overflow-hidden">
                   {route.cover_image_url ? (
-                    <img src={route.cover_image_url} alt={route.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <img src={route.cover_image_url} alt={route.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                   ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 flex flex-col items-center justify-center text-white">
-                      <MapPin className="w-10 h-10 mb-2 opacity-80" />
-                      <span className="font-bold tracking-widest uppercase opacity-50 text-sm">Touring Route</span>
+                    <div className="w-full h-full bg-gradient-to-br from-gray-700 to-gray-900 flex flex-col items-center justify-center text-white">
+                      <MapPin className="w-10 h-10 mb-2 opacity-50" />
                     </div>
                   )}
-                  <div className="absolute top-4 right-4 px-3 py-1 bg-black/60 backdrop-blur-md rounded-full text-xs font-bold text-white tracking-wide flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-green-400"></span>
-                    {rawCategory}
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                  
+                  {/* Badges */}
+                  <div className="absolute top-4 left-4 flex flex-col gap-2">
+                    <div className="px-3 py-1.5 bg-black/60 backdrop-blur-md rounded-lg text-[10px] font-bold text-white tracking-widest uppercase border border-white/10">
+                      {route.origin} &rarr; {route.destination}
+                    </div>
+                  </div>
+                  
+                  {/* Title Overlay */}
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <h3 className="text-xl font-black text-white line-clamp-2 leading-tight group-hover:text-blue-400 transition-colors">
+                      {route.title}
+                    </h3>
                   </div>
                 </div>
-                <div className="p-6 flex flex-col flex-1">
-                  <div className="flex items-center gap-2 text-xs font-semibold text-blue-600 dark:text-blue-400 mb-3">
-                    <span>{route.distance_text}</span>
-                    <span>&bull;</span>
-                    <span>{route.duration_text}</span>
+                
+                <div className="p-6 flex flex-col flex-1 bg-white dark:bg-gray-900">
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div>
+                      <p className="text-[10px] uppercase font-bold tracking-wider text-gray-400 mb-1">Jarak</p>
+                      <p className="text-sm font-bold text-gray-900 dark:text-white">{route.distance_text}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] uppercase font-bold tracking-wider text-gray-400 mb-1">Estimasi</p>
+                      <p className="text-sm font-bold text-gray-900 dark:text-white">{route.duration_text}</p>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                    {route.title}
-                  </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-6">
-                    {route.difficulty}
-                  </p>
-                  <div className="mt-auto flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-900 dark:text-white">Lihat Detail Alternatif</span>
-                    <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                      <ArrowRight className="w-4 h-4" />
+                  
+                  <div className="mb-6 pb-6 border-b border-gray-100 dark:border-gray-800">
+                    <p className="text-[10px] uppercase font-bold tracking-wider text-gray-400 mb-2">Rekomendasi Motor</p>
+                    <div className="flex flex-wrap gap-2">
+                      {route.recommended_motorcycles && route.recommended_motorcycles.length > 0 ? (
+                        route.recommended_motorcycles.map(moto => (
+                          <span key={moto} className="px-2.5 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-xs font-semibold rounded-md">
+                            {moto}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="px-2.5 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-xs font-semibold rounded-md">Semua Motor</span>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="mt-auto flex items-center justify-between group/btn">
+                    <span className="text-sm font-bold text-gray-900 dark:text-white group-hover/btn:text-blue-600 transition-colors">Jelajahi Rute</span>
+                    <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all transform group-hover:translate-x-1">
+                      <ArrowRight className="w-5 h-5" />
                     </div>
                   </div>
                 </div>
