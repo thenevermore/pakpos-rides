@@ -1,13 +1,14 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, use } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import { Save, Loader2, ArrowLeft, Wrench, CheckSquare, Square } from 'lucide-react';
 import Link from 'next/link';
 import { TouringRoute, TouringGear } from '@/lib/types';
 
-export default function EditRoutePage({ params }: { params: { id: string } }) {
+export default function EditRoutePage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = use(params);
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -32,7 +33,7 @@ export default function EditRoutePage({ params }: { params: { id: string } }) {
       const { data: routeData, error: routeError } = await supabase
         .from('touring_routes')
         .select('*')
-        .eq('id', params.id)
+        .eq('id', resolvedParams.id)
         .single();
         
       if (routeError) {
@@ -61,7 +62,7 @@ export default function EditRoutePage({ params }: { params: { id: string } }) {
     };
 
     fetchData();
-  }, [params.id]);
+  }, [resolvedParams.id]);
 
   const toggleGear = (id: string) => {
     setSelectedGears(prev => 
@@ -105,7 +106,7 @@ export default function EditRoutePage({ params }: { params: { id: string } }) {
           cover_image_url: coverImageUrl || null,
           article_content: articleContent,
         })
-        .eq('id', params.id);
+        .eq('id', resolvedParams.id);
 
       if (dbError) throw dbError;
       alert('Perubahan berhasil disimpan!');
