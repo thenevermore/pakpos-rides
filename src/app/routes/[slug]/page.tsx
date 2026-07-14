@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { MapPin, Clock, Navigation, Star, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import RouteReportForm from '@/components/RouteReportForm';
+import { marked } from 'marked';
 
 export const revalidate = 0; // Disable cache so new routes appear instantly
 
@@ -142,10 +143,11 @@ export default async function RouteDetailPage({ params }: { params: Promise<{ sl
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
           {/* Main Article */}
-          <div className="lg:col-span-2 prose prose-lg dark:prose-invert prose-blue max-w-none prose-headings:font-black prose-headings:tracking-tight prose-a:text-blue-600 prose-img:rounded-3xl prose-img:shadow-lg prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-p:leading-relaxed">
+          <div className="lg:col-span-2 prose prose-lg dark:prose-invert prose-blue max-w-none prose-headings:font-black prose-headings:tracking-tight prose-a:text-blue-600 prose-img:rounded-3xl prose-img:shadow-lg prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-p:leading-relaxed prose-li:text-gray-600 dark:prose-li:text-gray-300 prose-strong:text-gray-900 dark:prose-strong:text-white">
             {articleParts.map((part, index) => {
               if (index % 2 === 0) {
-                return <div key={index} dangerouslySetInnerHTML={{ __html: part }} />;
+                const htmlContent = marked.parse(part) as string;
+                return <div key={index} dangerouslySetInnerHTML={{ __html: htmlContent }} />;
               }
               
               const ids = part.split(',');
