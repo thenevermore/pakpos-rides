@@ -86,6 +86,12 @@ export default function AdminRoutesPage() {
                 >
                   Lihat
                 </Link>
+                <Link
+                  href={`/admin/routes/edit/${route.id}`}
+                  className="px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded-lg transition-colors"
+                >
+                  Edit
+                </Link>
                 <button
                   onClick={() => handleDelete(route.id, route.title)}
                   className="px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50 rounded-lg transition-colors"

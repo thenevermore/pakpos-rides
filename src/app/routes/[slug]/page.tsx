@@ -33,13 +33,30 @@ export default async function RouteDetailPage({ params }: { params: { slug: stri
 
   const route = routeData as TouringRoute;
 
-  // Fetch some random gears for recommendation
-  const { data: gearsData } = await supabase
-    .from('touring_gears')
-    .select('*')
-    .limit(3);
+  // Check if article has shortcodes
+  const shortcodeRegex = /\[GEARS:(.*?)\]/g;
+  const matches = [...route.article_content.matchAll(shortcodeRegex)];
+  let specificGearIds: string[] = [];
   
-  const gears = (gearsData || []) as TouringGear[];
+  if (matches.length > 0) {
+    specificGearIds = matches.map(m => m[1].split(',')).flat();
+  }
+
+  // Fetch gears
+  let gears: TouringGear[] = [];
+  if (specificGearIds.length > 0) {
+    const { data } = await supabase.from('touring_gears').select('*').in('id', specificGearIds);
+    gears = (data || []) as TouringGear[];
+  } else {
+    // Fallback to random 3 gears if no shortcode is used
+    const { data } = await supabase.from('touring_gears').select('*').limit(3);
+    gears = (data || []) as TouringGear[];
+  }
+
+  // Split article content by the shortcode for rendering
+  const articleParts = route.article_content.split(shortcodeRegex);
+  // articleParts format: [ "html before", "id1,id2", "html after", "id3", "html end" ]
+  // Even indexes (0, 2, 4) are HTML strings. Odd indexes (1, 3) are comma-separated IDs.
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
@@ -114,7 +131,43 @@ export default async function RouteDetailPage({ params }: { params: { slug: stri
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
         {/* Main Article */}
         <div className="lg:col-span-2 prose prose-lg dark:prose-invert prose-blue max-w-none prose-headings:font-bold prose-a:text-blue-600 prose-img:rounded-2xl">
-          <div dangerouslySetInnerHTML={{ __html: route.article_content }} />
+          {articleParts.map((part, index) => {
+            // If it's an even index, it's normal HTML content
+            if (index % 2 === 0) {
+              return <div key={index} dangerouslySetInnerHTML={{ __html: part }} />;
+            }
+            
+            // If it's an odd index, it's a list of Gear IDs (from our shortcode)
+            const ids = part.split(',');
+            const renderedGears = gears.filter(g => ids.includes(g.id));
+            
+            if (renderedGears.length === 0) return null;
+
+            return (
+              <div key={index} className="not-prose my-10 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-6 md:p-8 text-white shadow-xl">
+                <h3 className="font-bold mb-6 text-xl flex items-center gap-2">
+                  <Star className="w-6 h-6 fill-amber-400 text-amber-400" /> Rekomendasi Gear Pilihan
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {renderedGears.map(gear => (
+                    <a key={gear.id} href={gear.affiliate_url || '#'} target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 bg-white/10 hover:bg-white/20 p-4 rounded-2xl transition-all hover:scale-[1.02]">
+                      {gear.image_url ? (
+                        <div className="w-16 h-16 rounded-xl bg-white overflow-hidden flex-shrink-0">
+                          <img src={gear.image_url} alt={gear.name} className="w-full h-full object-contain" />
+                        </div>
+                      ) : (
+                        <div className="w-16 h-16 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0" />
+                      )}
+                      <div>
+                        <p className="text-xs text-blue-200 font-medium mb-1">{gear.category}</p>
+                        <p className="text-base font-bold line-clamp-2 leading-tight">{gear.name}</p>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </div>
 
         {/* Sidebar */}
@@ -141,8 +194,8 @@ export default async function RouteDetailPage({ params }: { params: { slug: stri
             </div>
           )}
 
-          {/* Recommended Gears */}
-          {gears.length > 0 && (
+          {/* Recommended Gears (Fallback Sidebar) */}
+          {gears.length > 0 && matches.length === 0 && (
             <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-6 text-white shadow-lg">
               <h3 className="font-bold mb-4 text-lg">Rekomendasi Gear</h3>
               <div className="space-y-3">
