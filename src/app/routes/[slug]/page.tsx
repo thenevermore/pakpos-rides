@@ -182,7 +182,7 @@ export default async function RouteDetailPage({ params }: { params: Promise<{ sl
                           </div>
                         </div>
                         <div className="mt-auto w-full py-2 bg-blue-600/20 group-hover:bg-blue-600 text-blue-300 group-hover:text-white rounded-xl text-xs font-bold text-center transition-colors">
-                          Cek Harga Promo
+                          Lihat Detail
                         </div>
                       </a>
                     ))}

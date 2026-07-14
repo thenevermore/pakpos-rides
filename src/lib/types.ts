@@ -100,5 +100,6 @@ export interface TouringGear {
   price_estimation: string | null;
   affiliate_url: string | null;
   image_url: string | null;
+  admin_review?: string | null;
   created_at: string;
 }

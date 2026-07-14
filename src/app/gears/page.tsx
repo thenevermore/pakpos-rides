@@ -67,11 +67,20 @@ export default async function GearsPage() {
                       <p className="text-sm font-bold text-blue-600 dark:text-blue-400 mb-3">
                         {formatRupiah(gear.price_estimation)}
                       </p>
-                      <div className="text-sm text-gray-500 dark:text-gray-400 mb-6 flex-1 relative overflow-hidden">
+                      <div className="text-sm text-gray-500 dark:text-gray-400 mb-4 flex-1 relative overflow-hidden">
                         <div className="line-clamp-4 whitespace-pre-line">
                           {gear.description}
                         </div>
                       </div>
+                      
+                      {gear.admin_review && (
+                        <div className="mb-6 p-3 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-600 rounded-r-xl">
+                          <p className="text-xs font-bold text-blue-800 dark:text-blue-300 mb-1">💡 Review PakPOS:</p>
+                          <p className="text-sm text-blue-900/80 dark:text-blue-200/80 italic leading-snug whitespace-pre-line">
+                            "{gear.admin_review}"
+                          </p>
+                        </div>
+                      )}
 
                       <a
                         href={gear.affiliate_url || '#'}
@@ -79,7 +88,7 @@ export default async function GearsPage() {
                         rel="noopener noreferrer"
                         className="w-full flex items-center justify-center gap-2 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold rounded-xl hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
                       >
-                        Lihat Produk <ExternalLink className="w-4 h-4" />
+                        Lihat Detail <ExternalLink className="w-4 h-4" />
                       </a>
                     </div>
                   </div>

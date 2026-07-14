@@ -19,7 +19,8 @@ export default function AdminGearsPage() {
     description: '',
     price_estimation: '',
     affiliate_url: '',
-    image_url: ''
+    image_url: '',
+    admin_review: ''
   });
 
   const fetchGears = async () => {
@@ -36,7 +37,7 @@ export default function AdminGearsPage() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    
+
     try {
       if (formData.id) {
         // Update
@@ -46,7 +47,8 @@ export default function AdminGearsPage() {
           description: formData.description,
           price_estimation: formData.price_estimation,
           affiliate_url: formData.affiliate_url,
-          image_url: formData.image_url
+          image_url: formData.image_url,
+          admin_review: formData.admin_review
         }).eq('id', formData.id);
         if (error) throw error;
       } else {
@@ -55,10 +57,9 @@ export default function AdminGearsPage() {
         const { error } = await supabase.from('touring_gears').insert(insertData);
         if (error) throw error;
       }
-      
       await fetchGears();
       setShowForm(false);
-      setFormData({ id: '', category: 'Helm', name: '', description: '', price_estimation: '', affiliate_url: '', image_url: '' });
+      setFormData({ id: '', category: 'Helm', name: '', description: '', price_estimation: '', affiliate_url: '', image_url: '', admin_review: '' });
     } catch (err: any) {
       alert(err.message || 'Gagal menyimpan');
     } finally {
@@ -74,7 +75,8 @@ export default function AdminGearsPage() {
       description: gear.description || '',
       price_estimation: gear.price_estimation || '',
       affiliate_url: gear.affiliate_url || '',
-      image_url: gear.image_url || ''
+      image_url: gear.image_url || '',
+      admin_review: gear.admin_review || ''
     });
     setShowForm(true);
   };
@@ -93,9 +95,9 @@ export default function AdminGearsPage() {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Gear Rekomendasi</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400">Kelola daftar gear touring untuk link afiliasi</p>
         </div>
-        <button 
+        <button
           onClick={() => {
-            setFormData({ id: '', category: 'Helm', name: '', description: '', price_estimation: '', affiliate_url: '', image_url: '' });
+            setFormData({ id: '', category: 'Helm', name: '', description: '', price_estimation: '', affiliate_url: '', image_url: '', admin_review: '' });
             setShowForm(true);
           }}
           className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-xl transition-colors shadow-sm"
@@ -110,35 +112,41 @@ export default function AdminGearsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium mb-1.5">Nama Produk</label>
-              <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-700 bg-transparent" />
+              <input required type="text" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-700 bg-transparent" />
             </div>
             <div>
               <label className="block text-sm font-medium mb-1.5">Kategori</label>
-              <select value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-700 bg-transparent">
+              <select value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })} className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-700 bg-transparent">
                 <option value="Helm">Helm</option>
                 <option value="Jaket">Jaket</option>
                 <option value="Sarung Tangan">Sarung Tangan</option>
                 <option value="Sepatu">Sepatu</option>
                 <option value="Jas Hujan">Jas Hujan</option>
                 <option value="Intercom">Intercom</option>
+                <option value="Tas">Tank/Tail/Side Bag</option>
+                <option value="Box">Top/Side Box</option>
                 <option value="Aksesoris Lain">Aksesoris Lain</option>
               </select>
             </div>
             <div>
               <label className="block text-sm font-medium mb-1.5">Estimasi Harga</label>
-              <input type="text" placeholder="Rp 500.000" value={formData.price_estimation} onChange={e => setFormData({...formData, price_estimation: e.target.value})} className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-700 bg-transparent" />
+              <input type="text" placeholder="Rp 500.000" value={formData.price_estimation} onChange={e => setFormData({ ...formData, price_estimation: e.target.value })} className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-700 bg-transparent" />
             </div>
             <div>
               <label className="block text-sm font-medium mb-1.5">Image URL</label>
-              <input type="text" value={formData.image_url} onChange={e => setFormData({...formData, image_url: e.target.value})} className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-700 bg-transparent" />
+              <input type="text" value={formData.image_url} onChange={e => setFormData({ ...formData, image_url: e.target.value })} className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-700 bg-transparent" />
             </div>
             <div className="md:col-span-2">
               <label className="block text-sm font-medium mb-1.5">Affiliate URL (Tokopedia/Shopee/Tiktok)</label>
-              <input type="text" value={formData.affiliate_url} onChange={e => setFormData({...formData, affiliate_url: e.target.value})} className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-700 bg-transparent" />
+              <input type="text" value={formData.affiliate_url} onChange={e => setFormData({ ...formData, affiliate_url: e.target.value })} className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-700 bg-transparent" />
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium mb-1.5">Deskripsi / Review Singkat</label>
-              <textarea rows={2} value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-700 bg-transparent"></textarea>
+              <label className="block text-sm font-medium mb-1.5">Deskripsi Produk (Bisa Bullet List)</label>
+              <textarea rows={2} value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-700 bg-transparent"></textarea>
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium mb-1.5">Review Admin / Alasan Rekomendasi</label>
+              <textarea rows={3} placeholder="Tuliskan pengalaman jujur kenapa gear ini layak direkomendasikan..." value={formData.admin_review} onChange={e => setFormData({ ...formData, admin_review: e.target.value })} className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-700 bg-transparent"></textarea>
             </div>
           </div>
           <div className="mt-6 flex justify-end gap-3">
