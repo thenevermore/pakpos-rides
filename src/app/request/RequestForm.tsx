@@ -10,10 +10,11 @@ export default function RequestForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const form = e.currentTarget; // capture form reference synchronously
     setLoading(true);
     setStatus('idle');
     
-    const formData = new FormData(e.currentTarget);
+    const formData = new FormData(form);
     const brand = formData.get('brand') as string;
     const model = formData.get('model') as string;
     const note = formData.get('note') as string;
@@ -40,7 +41,7 @@ export default function RequestForm() {
       });
 
       setStatus('success');
-      e.currentTarget.reset();
+      form.reset();
     } catch (err) {
       console.error(err);
       setStatus('error');
