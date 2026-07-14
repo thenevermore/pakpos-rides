@@ -12,7 +12,7 @@ const mapsClient = new Client({});
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { origin, destination, theme, motorcycleType, isOvernight } = body;
+    const { origin, destination, theme, motorcycleType, isOvernight, routeIndex = 0, category = 'Umum', routeWarning = '' } = body;
 
     if (!origin || !destination) {
       return NextResponse.json({ error: 'Pilih atau tentukan Asal dan Tujuan nya' }, { status: 400 });
@@ -29,6 +29,8 @@ export async function POST(req: Request) {
         destination,
         key: GOOGLE_MAPS_API_KEY,
         mode: 'driving' as any,
+        avoid: ['tolls', 'highways'] as any,
+        alternatives: true,
       },
     });
 
@@ -36,10 +38,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Could not find route via Google Maps' }, { status: 400 });
     }
 
-    const route = directionsRes.data.routes[0].legs[0];
-    const distanceText = route.distance.text;
-    const durationText = route.duration.text;
-    const steps = route.steps;
+    const route = directionsRes.data.routes[routeIndex] || directionsRes.data.routes[0];
+    const leg = route.legs[0];
+    const distanceText = leg.distance.text;
+    const durationText = leg.duration.text;
+    const steps = leg.steps;
 
     // 2. Find a midpoint to recommend a rest area
     // Just taking a step roughly in the middle of the journey
@@ -76,7 +79,7 @@ export async function POST(req: Request) {
     }
 
     // 4. Generate Article with Gemini
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-pro' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-flash-latest' });
 
     const prompt = `
 Anda adalah seorang Karyawan Korporat, pejuang 9 to 5, yang juga seorang rider Yamaha MT dari Indonesia Usia 35 tahun ke atas, dengan tinggi 166 cm dan berat badan 67kg (mirip gaya bicara santai tapi informatif tapi gaya bahasa natural tanpa terkesan AI).
@@ -87,17 +90,21 @@ Tulis artikel panduan touring berdasarkan data asli dari Google Maps berikut:
 - Jarak Tempuh Asli: ${distanceText}
 - Estimasi Waktu Asli: ${durationText}
 - Tema Riding: ${theme || 'Santai'}
+- Kategori Spesifik: ${category}
 - Cocok untuk motor: ${motorcycleType || 'Bebas'}
 - Tipe Perjalanan: ${isOvernight ? 'Menginap (Sertakan rekomendasi jenis penginapan/hotel)' : 'Pulang Pergi / Tidak Menginap (Berikan tips manajemen waktu agar tidak kemalaman di jalan)'}
+${category === 'Motocamping' ? '- INSTRUKSI KHUSUS MOTOCAMPING: Buatkan daftar rekomendasi GEAR CAMPING yang ringkas dan cocok untuk dibawa di motor (misal: Tenda 2P ringan, sleeping bag, matras tiup ringkas, kompor portabel).' : ''}
+${routeWarning ? `- Peringatan Medan/Jalur dari Admin: ${routeWarning} (HARAP HIGHLIGHT INFO INI)` : ''}
 
-Titik Istirahat (Rest Area/Cafe) rekomendasi dari Google Maps (sebutkan dalam artikel):
+Titik Istirahat (Rest Area/Cafe) rekomendasi dari Google Maps (gabungkan dengan pengetahuan Anda):
 ${checkpoints.map(c => `- ${c.name} (Rating ${c.rating} dari ${c.user_ratings_total} ulasan) di ${c.vicinity}`).join('\n')}
 
 Instruksi Format:
 - Hasil HARUS berupa format HTML murni (tanpa tag \`\`\`html) yang bisa langsung dirender. Gunakan tag <h2>, <p>, <ul>, <li>, <strong>.
 - Awali dengan Paragraf Pengantar yang seru.
-- Buat sub-judul <h2>Persiapan & Kondisi Jalan</h2> (tambahkan tips sesuai jarak tempuh).
-- Buat sub-judul <h2>Rekomendasi Titik Istirahat ${isOvernight ? '& Tempat Menginap' : ''}</h2> (bahas tempat yang direkomendasikan di atas, dan beri insight tentang penginapan jika menginap).
+- Buat sub-judul <h2>Persiapan & Kondisi Jalan</h2> (tambahkan tips sesuai jarak tempuh dan peringatan admin jika ada).
+- Buat sub-judul <h2>Rekomendasi Perlengkapan & Gear</h2> (bahas gear motor standard, dan JIKA Motocamping, berikan list gear camping).
+- Buat sub-judul <h2>Rekomendasi Titik Istirahat ${isOvernight ? '& Tempat Menginap' : ''}</h2>. PENTING: Jangan hanya mengandalkan Google Maps. Masukkan juga rekomendasi warung/tempat istirahat "legendaris" atau rahasia yang sering didatangi vlogger/rider di jalur ini berdasarkan artikel Google/YouTube.
 - Buat sub-judul <h2>Kesimpulan</h2>.
 - Jangan gunakan markdown, langsung tag HTML saja. Jangan menggunakan <html> atau <body>.
 `;

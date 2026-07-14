@@ -4,7 +4,7 @@ import { Shield, ShoppingBag, ExternalLink } from 'lucide-react';
 
 export const metadata = {
   title: 'Rekomendasi Gear Touring - PakPOS Rides',
-  description: 'Temukan rekomendasi helm, jaket, dan perlengkapan touring terbaik untuk perjalanan Anda.',
+  description: 'Temukan rekomendasi helm, jaket, dan perlengkapan touring terbaik untuk perjalanan Kamu.',
 };
 
 export default async function GearsPage() {
@@ -32,7 +32,7 @@ export default async function GearsPage() {
           Gear Touring Pilihan
         </h1>
         <p className="text-lg text-gray-600 dark:text-gray-400">
-          Keselamatan dan kenyamanan adalah nomor satu saat *riding*. Berikut adalah perlengkapan yang direkomendasikan oleh tim PakPOS.
+          Keselamatan dan kenyamanan adalah nomor satu saat <b>Riding</b>. Berikut adalah perlengkapan yang direkomendasikan oleh tim PakPOS.
         </p>
       </div>
 
@@ -59,10 +59,10 @@ export default async function GearsPage() {
                       <h3 className="font-bold text-gray-900 dark:text-white mb-1 line-clamp-2">{gear.name}</h3>
                       <p className="text-sm font-semibold text-blue-600 dark:text-blue-400 mb-3">{gear.price_estimation}</p>
                       <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 line-clamp-3 flex-1">{gear.description}</p>
-                      
-                      <a 
-                        href={gear.affiliate_url || '#'} 
-                        target="_blank" 
+
+                      <a
+                        href={gear.affiliate_url || '#'}
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="w-full flex items-center justify-center gap-2 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold rounded-xl hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
                       >

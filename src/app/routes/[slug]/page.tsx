@@ -51,6 +51,25 @@ export default async function RouteDetailPage({ params }: { params: { slug: stri
         <h1 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white mb-6 leading-tight">
           {route.title}
         </h1>
+        <div className="flex flex-wrap items-center justify-center gap-4 text-sm font-medium text-gray-500 mb-6">
+            <div className="flex items-center gap-1.5">
+              <Navigation className="w-4 h-4 text-blue-400" />
+              <span>{route.distance_text}</span>
+            </div>
+            <span className="text-gray-500">&bull;</span>
+            <div className="flex items-center gap-1.5">
+              <Clock className="w-4 h-4 text-blue-400" />
+              <span>{route.duration_text}</span>
+            </div>
+            {route.created_at && (
+              <>
+                <span className="text-gray-500">&bull;</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-gray-400">Update: {new Date(route.created_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                </div>
+              </>
+            )}
+          </div>
         
         <div className="flex flex-wrap items-center justify-center gap-4 md:gap-8 text-gray-600 dark:text-gray-300">
           <div className="flex items-center gap-2">
