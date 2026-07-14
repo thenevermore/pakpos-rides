@@ -76,3 +76,40 @@ CREATE POLICY "Public read access" ON knowledge_base FOR SELECT USING (true);
 CREATE INDEX idx_motorcycles_brand_id ON motorcycles(brand_id);
 CREATE INDEX idx_motorcycles_category ON motorcycles(category);
 CREATE INDEX idx_knowledge_base_motorcycle_id ON knowledge_base(motorcycle_id);
+
+-- Touring Routes table
+CREATE TABLE touring_routes (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  slug TEXT NOT NULL UNIQUE,
+  origin TEXT NOT NULL,
+  destination TEXT NOT NULL,
+  distance_text TEXT NOT NULL,
+  duration_text TEXT NOT NULL,
+  difficulty TEXT NOT NULL,
+  recommended_motorcycles TEXT[] NOT NULL DEFAULT '{}',
+  article_content TEXT NOT NULL,
+  checkpoints JSONB NOT NULL DEFAULT '[]'::jsonb,
+  cover_image_url TEXT,
+  map_embed_url TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Touring Gears table
+CREATE TABLE touring_gears (
+  id TEXT PRIMARY KEY,
+  category TEXT NOT NULL,
+  name TEXT NOT NULL,
+  description TEXT,
+  price_estimation TEXT,
+  affiliate_url TEXT,
+  image_url TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- RLS & Policies for new tables
+ALTER TABLE touring_routes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE touring_gears ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public read access" ON touring_routes FOR SELECT USING (true);
+CREATE POLICY "Public read access" ON touring_gears FOR SELECT USING (true);

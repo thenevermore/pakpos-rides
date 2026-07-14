@@ -74,3 +74,31 @@ export interface KnowledgeBase {
 export interface MotorcycleDetail extends Motorcycle {
   recommendations: KnowledgeBase;
 }
+
+export interface TouringRoute {
+  id: string;
+  title: string;
+  slug: string;
+  origin: string;
+  destination: string;
+  distance_text: string;
+  duration_text: string;
+  difficulty: string;
+  recommended_motorcycles: string[];
+  article_content: string;
+  checkpoints: any[];
+  cover_image_url: string | null;
+  map_embed_url: string | null;
+  created_at: string;
+}
+
+export interface TouringGear {
+  id: string;
+  category: string;
+  name: string;
+  description: string | null;
+  price_estimation: string | null;
+  affiliate_url: string | null;
+  image_url: string | null;
+  created_at: string;
+}

@@ -31,6 +31,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <Link href="/" className="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
                 Beranda
               </Link>
+              <Link href="/routes" className="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                Rute Touring
+              </Link>
+              <Link href="/gears" className="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                Gear & Aksesoris
+              </Link>
               <Link href="/about" className="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
                 Tentang
               </Link>
@@ -57,6 +63,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <nav className="md:hidden pb-4 border-t border-gray-100 dark:border-gray-800 pt-3 flex flex-col gap-2">
               <Link href="/" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800">
                 Beranda
+              </Link>
+              <Link href="/routes" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800">
+                Rute Touring
+              </Link>
+              <Link href="/gears" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800">
+                Gear & Aksesoris
               </Link>
               <Link href="/about" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800">
                 Tentang
