@@ -30,12 +30,15 @@ export default function RequestForm() {
       const url = process.env.NEXT_PUBLIC_FEEDBACK_SCRIPT_URL;
       if (!url) throw new Error('Feedback endpoint not configured');
 
-      const res = await fetch(url, {
+      await fetch(url, {
         method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(data),
       });
 
-      if (!res.ok) throw new Error('Failed to submit');
       setStatus('success');
       e.currentTarget.reset();
     } catch (err) {
