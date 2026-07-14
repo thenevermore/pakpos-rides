@@ -22,6 +22,13 @@ export default async function GearsPage() {
     return acc;
   }, {} as Record<string, TouringGear[]>);
 
+  const formatRupiah = (price: string) => {
+    if (!price) return price;
+    const num = parseInt(price.replace(/\D/g, ''), 10);
+    if (isNaN(num)) return price;
+    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-12 text-center max-w-2xl mx-auto">
@@ -57,8 +64,14 @@ export default async function GearsPage() {
                     </div>
                     <div className="flex-1 flex flex-col">
                       <h3 className="font-bold text-gray-900 dark:text-white mb-1 line-clamp-2">{gear.name}</h3>
-                      <p className="text-sm font-semibold text-blue-600 dark:text-blue-400 mb-3">{gear.price_estimation}</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 line-clamp-3 flex-1">{gear.description}</p>
+                      <p className="text-sm font-bold text-blue-600 dark:text-blue-400 mb-3">
+                        {formatRupiah(gear.price_estimation)}
+                      </p>
+                      <div className="text-sm text-gray-500 dark:text-gray-400 mb-6 flex-1 relative overflow-hidden">
+                        <div className="line-clamp-4 whitespace-pre-line">
+                          {gear.description}
+                        </div>
+                      </div>
 
                       <a
                         href={gear.affiliate_url || '#'}
