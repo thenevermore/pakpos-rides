@@ -17,6 +17,7 @@ export default function RouteGeneratorPage() {
   const [destination, setDestination] = useState('');
   const [theme, setTheme] = useState('Santai');
   const [motorcycleType, setMotorcycleType] = useState('Matic');
+  const [isOvernight, setIsOvernight] = useState(false);
 
   // Result State
   const [generatedData, setGeneratedData] = useState<{
@@ -40,7 +41,7 @@ export default function RouteGeneratorPage() {
       const res = await fetch('/api/generate-route', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ origin, destination, theme, motorcycleType }),
+        body: JSON.stringify({ origin, destination, theme, motorcycleType, isOvernight }),
       });
 
       if (!res.ok) {
@@ -52,7 +53,7 @@ export default function RouteGeneratorPage() {
       setGeneratedData(data);
       setArticleContent(data.articleContent);
       
-      const defaultTitle = `Rute Touring ${theme}: ${origin} ke ${destination}`;
+      const defaultTitle = `Rute Touring ${theme} ${isOvernight ? '(Menginap)' : '(PP)'}: ${origin} ke ${destination}`;
       setTitle(defaultTitle);
       setSlug(defaultTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''));
       
@@ -76,7 +77,7 @@ export default function RouteGeneratorPage() {
         destination,
         distance_text: generatedData.distanceText,
         duration_text: generatedData.durationText,
-        difficulty: theme,
+        difficulty: `${theme} • ${isOvernight ? 'Menginap' : 'Pulang Pergi'}`,
         recommended_motorcycles: [motorcycleType],
         article_content: articleContent,
         checkpoints: generatedData.checkpoints,
@@ -147,6 +148,10 @@ export default function RouteGeneratorPage() {
                 <option value="Sport (150-250cc)">Sport (150-250cc)</option>
                 <option value="Trail / Cross">Trail / Cross</option>
               </select>
+            </div>
+            <div className="md:col-span-2 flex items-center gap-3 bg-gray-50 dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700">
+              <input type="checkbox" id="overnight" checked={isOvernight} onChange={e => setIsOvernight(e.target.checked)} className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500 border-gray-300" />
+              <label htmlFor="overnight" className="text-sm font-medium text-gray-700 dark:text-gray-300">Rute ini membutuhkan Menginap (Sertakan rekomendasi jenis penginapan)</label>
             </div>
           </div>
           

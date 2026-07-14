@@ -3,6 +3,7 @@ import { TouringRoute, TouringGear } from '@/lib/types';
 import { notFound } from 'next/navigation';
 import { MapPin, Clock, Navigation, Star, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import RouteReportForm from '@/components/RouteReportForm';
 
 export const revalidate = 3600; // Revalidate every hour
 
@@ -147,6 +148,9 @@ export default async function RouteDetailPage({ params }: { params: { slug: stri
           )}
         </div>
       </div>
+
+      {/* Report Form */}
+      <RouteReportForm routeName={route.title} />
     </div>
   );
 }

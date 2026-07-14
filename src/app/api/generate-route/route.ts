@@ -12,7 +12,7 @@ const mapsClient = new Client({});
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { origin, destination, theme, motorcycleType } = body;
+    const { origin, destination, theme, motorcycleType, isOvernight } = body;
 
     if (!origin || !destination) {
       return NextResponse.json({ error: 'Pilih atau tentukan Asal dan Tujuan nya' }, { status: 400 });
@@ -88,6 +88,7 @@ Tulis artikel panduan touring berdasarkan data asli dari Google Maps berikut:
 - Estimasi Waktu Asli: ${durationText}
 - Tema Riding: ${theme || 'Santai'}
 - Cocok untuk motor: ${motorcycleType || 'Bebas'}
+- Tipe Perjalanan: ${isOvernight ? 'Menginap (Sertakan rekomendasi jenis penginapan/hotel)' : 'Pulang Pergi / Tidak Menginap (Berikan tips manajemen waktu agar tidak kemalaman di jalan)'}
 
 Titik Istirahat (Rest Area/Cafe) rekomendasi dari Google Maps (sebutkan dalam artikel):
 ${checkpoints.map(c => `- ${c.name} (Rating ${c.rating} dari ${c.user_ratings_total} ulasan) di ${c.vicinity}`).join('\n')}
@@ -96,8 +97,7 @@ Instruksi Format:
 - Hasil HARUS berupa format HTML murni (tanpa tag \`\`\`html) yang bisa langsung dirender. Gunakan tag <h2>, <p>, <ul>, <li>, <strong>.
 - Awali dengan Paragraf Pengantar yang seru.
 - Buat sub-judul <h2>Persiapan & Kondisi Jalan</h2> (tambahkan tips sesuai jarak tempuh).
-- Buat sub-judul <h2>Rekomendasi Titik Istirahat (versi singgah) </h2> (bahas tempat yang direkomendasikan di atas).
-- Buat sub-judul <h2>Rekomendasi Tempat Menginap (versi menginap) </h2> (bahas tempat yang direkomendasikan di atas).
+- Buat sub-judul <h2>Rekomendasi Titik Istirahat ${isOvernight ? '& Tempat Menginap' : ''}</h2> (bahas tempat yang direkomendasikan di atas, dan beri insight tentang penginapan jika menginap).
 - Buat sub-judul <h2>Kesimpulan</h2>.
 - Jangan gunakan markdown, langsung tag HTML saja. Jangan menggunakan <html> atau <body>.
 `;
