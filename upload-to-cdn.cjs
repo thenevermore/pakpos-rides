@@ -8,8 +8,14 @@ const { createClient } = require('@supabase/supabase-js');
 const WebSocket = require('ws');
 
 const SUPABASE_URL = 'https://xrxygfczqqvyufmtuosw.supabase.co';
-const SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhyeHlnZmN6cXF2eXVmbXR1b3N3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MTUwMjEzOSwiZXhwIjoyMDk3MDc4MTM5fQ.ICF8xcaOcIsz2VdM9xCFXkLl9L8ytv7qSG5Yx93EaEk';
-const IMAGEKIT_PRIVATE_KEY = 'private_ej7ulKeKphLiqvd8BI+8TXuU3zI=';
+const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const IMAGEKIT_PRIVATE_KEY = process.env.IMAGEKIT_PRIVATE_KEY;
+
+if (!SERVICE_ROLE_KEY || !IMAGEKIT_PRIVATE_KEY) {
+  console.error('ERROR: SUPABASE_SERVICE_ROLE_KEY and IMAGEKIT_PRIVATE_KEY environment variables are required.');
+  console.error('Usage: SUPABASE_SERVICE_ROLE_KEY=<key> IMAGEKIT_PRIVATE_KEY=<key> node upload-to-cdn.cjs');
+  process.exit(1);
+}
 const IMAGEKIT_UPLOAD_URL = 'https://upload.imagekit.io/api/v1/files/upload';
 const FOLDER = 'pakpos-rides';
 

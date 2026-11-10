@@ -5,7 +5,13 @@
  */
 
 const SUPABASE_URL = 'https://xrxygfczqqvyufmtuosw.supabase.co';
-const SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhyeHlnZmN6cXF2eXVmbXR1b3N3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MTUwMjEzOSwiZXhwIjoyMDk3MDc4MTM5fQ.ICF8xcaOcIsz2VdM9xCFXkLl9L8ytv7qSG5Yx93EaEk';
+const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!SERVICE_ROLE_KEY) {
+  console.error('ERROR: SUPABASE_SERVICE_ROLE_KEY environment variable is required.');
+  console.error('Usage: SUPABASE_SERVICE_ROLE_KEY=<your-key> node add-cdn-columns.cjs');
+  process.exit(1);
+}
 
 const tables = ['brands', 'motorcycles', 'oil_brands', 'fuel_brands'];
 
