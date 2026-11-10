@@ -1,10 +1,15 @@
 import { NextResponse } from 'next/server';
+import { requireAdmin, rateLimit, clientIp, unauthorized, tooManyRequests } from '@/lib/api-auth';
 import { Client } from '@googlemaps/google-maps-services-js';
 
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
 const mapsClient = new Client({});
 
 export async function POST(req: Request) {
+  const user = await requireAdmin(req);
+  if (!user) return unauthorized();
+  if (!rateLimit(`check-routes:${clientIp(req)}`, 10, 60_000)) return tooManyRequests();
+
   try {
     const body = await req.json();
     const { origin, destination } = body;

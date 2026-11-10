@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
+import { authHeaders } from '@/lib/auth-headers';
 import { useRouter } from 'next/navigation';
 import { Save, Loader2, MapPin, Wand2, ArrowLeft, Search, Navigation, CheckCircle2, Circle } from 'lucide-react';
 import Link from 'next/link';
@@ -63,7 +64,7 @@ export default function RouteGeneratorPage() {
     try {
       const res = await fetch('/api/check-routes', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
         body: JSON.stringify({ origin, destination }),
       });
 
@@ -92,7 +93,7 @@ export default function RouteGeneratorPage() {
     try {
       const res = await fetch('/api/generate-route', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
         body: JSON.stringify({ 
           origin, 
           destination, 

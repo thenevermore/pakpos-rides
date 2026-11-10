@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { requireAdmin, rateLimit, clientIp, unauthorized, tooManyRequests } from '@/lib/api-auth';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Client } from '@googlemaps/google-maps-services-js';
 
@@ -10,6 +11,10 @@ const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 const mapsClient = new Client({});
 
 export async function POST(req: Request) {
+  const user = await requireAdmin(req);
+  if (!user) return unauthorized();
+  if (!rateLimit(`generate-route:${clientIp(req)}`, 5, 60_000)) return tooManyRequests();
+
   try {
     const body = await req.json();
     const { origin, destination, theme, motorcycleType, isOvernight, routeIndex = 0, category = 'Umum', routeWarning = '' } = body;

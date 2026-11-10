@@ -2,6 +2,8 @@
  * Upload image URL to ImageKit CDN via server-side API
  * Returns the CDN URL or null on failure
  */
+import { authHeaders } from './auth-headers';
+
 export async function uploadToCdn(imageUrl: string, folder?: string): Promise<string | null> {
   if (!imageUrl) return null;
   
@@ -11,7 +13,7 @@ export async function uploadToCdn(imageUrl: string, folder?: string): Promise<st
   try {
     const res = await fetch('/api/upload-image', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
       body: JSON.stringify({ imageUrl, folder }),
     });
 

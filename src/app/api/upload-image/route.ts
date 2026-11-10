@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAdmin, rateLimit, clientIp, unauthorized, tooManyRequests } from '@/lib/api-auth';
 
 const IMAGEKIT_UPLOAD_URL = 'https://upload.imagekit.io/api/v1/files/upload';
 
 export async function POST(request: NextRequest) {
+  const user = await requireAdmin(request);
+  if (!user) return unauthorized();
+  if (!rateLimit(`upload-image:${clientIp(request)}`, 20, 60_000)) return tooManyRequests();
+
   try {
     const { imageUrl, fileName, folder } = await request.json();
 
